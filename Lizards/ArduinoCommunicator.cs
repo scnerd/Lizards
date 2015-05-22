@@ -6,11 +6,16 @@ using System.IO.Ports;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Remoting.Channels;
 
 namespace Lizards
 {
+    public delegate void NewAmbientTempHandler(double newTemp);
+
     public static class ArduinoCommunicator
     {
+        public static event NewAmbientTempHandler OnNewAmbientTemp;
+
         public const int BAUD_RATE = 9600;
         public const Parity PARITY = Parity.Even;
         public static readonly StopBits STOP_BITS = StopBits.One;
@@ -22,7 +27,17 @@ namespace Lizards
 
         private static SerialPort Port;
         private static bool KeepRunning;
+        private static bool AlreadyWrote = false;
         public static LizardData[] Lizards { get; private set; }
+
+        static ArduinoCommunicator()
+        {
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
+            {
+                SendStopSignal();
+                SaveResults(false);
+            });
+        }
 
         public static string[] GetPossiblePorts()
         {
@@ -70,6 +85,7 @@ namespace Lizards
                 while (KeepRunning)
                 {
                     double[] temps = ReadTemps();
+                    OnNewAmbientTemp(temps[0]);
                     LizardData.CurrentAmbientTemp = temps[0];
                     temps = temps.Skip(1).ToArray(); // Drop the first value, since we've used it already
                     foreach(var liz_temp in Lizards.Zip(temps, (liz, temp) => new Tuple<LizardData, double>(liz, temp)))
@@ -126,6 +142,24 @@ namespace Lizards
         private static double ConvertLizardTemp(int Value)
         {
             return Value * LIZARD_SCALE + LIZARD_BASE;
+        }
+
+        public static string Combine(this string Base, params string[] Others)
+        {
+            return Others.Aggregate((a, b) => a + Base + b);
+        }
+
+        public static string SaveResults(bool WriteEvenIfAlreadyWrote = true)
+        {
+            if (AlreadyWrote && !WriteEvenIfAlreadyWrote)
+                return null;
+
+            string path = string.Format("Lizard Results {0:u}.csv", DateTime.UtcNow).Replace(":", "_");
+            //using (StreamWriter file = File.CreateText(path)) // Need to make sure you don't overwrite existing file
+            //{
+                // Write out csv of results
+            //}
+            return path;
         }
     }
 }

@@ -58,7 +58,9 @@
     <Compile Include="InitExperiment.Designer.cs">
       <DependentUpon>InitExperiment.cs</DependentUpon>
     </Compile>
-    <Compile Include="LinePainter.cs" />
+    <Compile Include="LinePainter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="LinePainter.Designer.cs" />
     <Compile Include="LizardMonitor.cs">
       <SubType>UserControl</SubType>
@@ -74,6 +76,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="InitExperiment.resx">
+      <DependentUpon>InitExperiment.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LinePainter.resx" />
     <EmbeddedResource Include="LizardMonitor.resx">
       <DependentUpon>LizardMonitor.cs</DependentUpon>
