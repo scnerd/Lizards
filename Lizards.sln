@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LizardsConsole", "LizardsCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LizardsGUI", "LizardsGUI\LizardsGUI.csproj", "{3B30D665-06C3-4C8A-8A21-47970571D0A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineGraph", "..\Line Graph\LineGraph\LineGraph.csproj", "{D81E76DB-774A-488A-81FE-CBB4EC707945}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{457DC38D-9979-47C8-8FEA-D91FA3C6A333}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,16 +51,12 @@ Global
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Release|x86.ActiveCfg = Release|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Release|x86.Build.0 = Release|x86
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D81E76DB-774A-488A-81FE-CBB4EC707945}.Release|x86.ActiveCfg = Release|Any CPU
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Debug|Any CPU.ActiveCfg = Debug
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Debug|x86.ActiveCfg = Debug
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Release|Any CPU.ActiveCfg = Release
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Release|Mixed Platforms.ActiveCfg = Release
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

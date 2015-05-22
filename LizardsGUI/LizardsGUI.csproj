@@ -52,6 +52,14 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InitExperiment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InitExperiment.Designer.cs">
+      <DependentUpon>InitExperiment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LinePainter.cs" />
+    <Compile Include="LinePainter.Designer.cs" />
     <Compile Include="LizardMonitor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -66,6 +74,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="LinePainter.resx" />
     <EmbeddedResource Include="LizardMonitor.resx">
       <DependentUpon>LizardMonitor.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,10 +101,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Line Graph\LineGraph\LineGraph.csproj">
-      <Project>{d81e76db-774a-488a-81fe-cbb4ec707945}</Project>
-      <Name>LineGraph</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Lizards\Lizards.csproj">
       <Project>{FA562A00-94E6-452E-99C6-B725909CBFB6}</Project>
       <Name>Lizards</Name>

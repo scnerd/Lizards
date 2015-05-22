@@ -1,6 +1,6 @@
 ﻿namespace LizardsGUI
 {
-    partial class MainForm
+    partial class InitExperiment
     {
         /// <summary>
         /// Required designer variable.
@@ -28,21 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // MainForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(776, 448);
-            this.Name = "MainForm";
-            this.Text = "Lizards";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.ResumeLayout(false);
-
+            this.Text = "InitExperiment";
         }
 
         #endregion
     }
 }
-

@@ -9,18 +9,11 @@ using System.Windows.Forms;
 
 namespace LizardsGUI
 {
-    public partial class MainForm : Form
+    public partial class InitExperiment : Form
     {
-        public MainForm()
+        public InitExperiment()
         {
             InitializeComponent();
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            InitExperiment init = new InitExperiment();
-            init.ShowDialog();
-
         }
     }
 }
