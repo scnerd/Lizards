@@ -1,4 +1,6 @@
-﻿namespace LizardsGUI
+﻿using System.Windows.Forms;
+
+namespace LizardsGUI
 {
     partial class LizardMonitor
     {
@@ -36,12 +38,14 @@
             this.btnEvent2 = new System.Windows.Forms.Button();
             this.btnEvent1 = new System.Windows.Forms.Button();
             this.dataRecords = new System.Windows.Forms.DataGridView();
+            this.Timestamp = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AmbientTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LizardTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnNewNote = new System.Windows.Forms.Button();
             this.stpStatus = new System.Windows.Forms.StatusStrip();
             this.lblLizardName = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblCurrentTemp = new System.Windows.Forms.ToolStripStatusLabel();
-            this.Timestamp = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.sptOuter)).BeginInit();
             this.sptOuter.Panel1.SuspendLayout();
             this.sptOuter.Panel2.SuspendLayout();
@@ -69,9 +73,10 @@
             // sptOuter.Panel2
             // 
             this.sptOuter.Panel2.Controls.Add(this.sptInner);
-            this.sptOuter.Size = new System.Drawing.Size(611, 109);
+            this.sptOuter.Size = new System.Drawing.Size(809, 111);
             this.sptOuter.SplitterDistance = 220;
             this.sptOuter.TabIndex = 0;
+            this.sptOuter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.sptOuter_SplitterMoved);
             // 
             // gphTempGraph
             // 
@@ -83,7 +88,7 @@
             this.gphTempGraph.Location = new System.Drawing.Point(0, 0);
             this.gphTempGraph.MaxDataPoints = 1000;
             this.gphTempGraph.Name = "gphTempGraph";
-            this.gphTempGraph.Size = new System.Drawing.Size(220, 109);
+            this.gphTempGraph.Size = new System.Drawing.Size(220, 111);
             this.gphTempGraph.TabIndex = 0;
             this.gphTempGraph.Transparency = ((byte)(100));
             this.gphTempGraph.ValueInterval = 2;
@@ -104,9 +109,10 @@
             // 
             this.sptInner.Panel2.Controls.Add(this.dataRecords);
             this.sptInner.Panel2.Controls.Add(this.btnNewNote);
-            this.sptInner.Size = new System.Drawing.Size(387, 109);
+            this.sptInner.Size = new System.Drawing.Size(585, 111);
             this.sptInner.SplitterDistance = 118;
             this.sptInner.TabIndex = 0;
+            this.sptInner.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.sptInner_SplitterMoved);
             // 
             // tblEventButtons
             // 
@@ -123,37 +129,39 @@
             this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEventButtons.Size = new System.Drawing.Size(118, 109);
+            this.tblEventButtons.Size = new System.Drawing.Size(118, 111);
             this.tblEventButtons.TabIndex = 0;
             // 
             // btnStop
             // 
             this.btnStop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStop.Location = new System.Drawing.Point(3, 75);
+            this.btnStop.Enabled = false;
+            this.btnStop.Location = new System.Drawing.Point(3, 77);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(112, 31);
             this.btnStop.TabIndex = 2;
             this.btnStop.Text = "Event 3 (Stop)";
             this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnEvent1_Click);
+            this.btnStop.Click += new System.EventHandler(this.btnEvent3_Click);
             // 
             // btnEvent2
             // 
             this.btnEvent2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnEvent2.Location = new System.Drawing.Point(3, 39);
+            this.btnEvent2.Enabled = false;
+            this.btnEvent2.Location = new System.Drawing.Point(3, 40);
             this.btnEvent2.Name = "btnEvent2";
-            this.btnEvent2.Size = new System.Drawing.Size(112, 30);
+            this.btnEvent2.Size = new System.Drawing.Size(112, 31);
             this.btnEvent2.TabIndex = 1;
             this.btnEvent2.Text = "Event 2";
             this.btnEvent2.UseVisualStyleBackColor = true;
-            this.btnEvent2.Click += new System.EventHandler(this.btnEvent1_Click);
+            this.btnEvent2.Click += new System.EventHandler(this.btnEvent2_Click);
             // 
             // btnEvent1
             // 
             this.btnEvent1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnEvent1.Location = new System.Drawing.Point(3, 3);
             this.btnEvent1.Name = "btnEvent1";
-            this.btnEvent1.Size = new System.Drawing.Size(112, 30);
+            this.btnEvent1.Size = new System.Drawing.Size(112, 31);
             this.btnEvent1.TabIndex = 0;
             this.btnEvent1.Text = "Event 1";
             this.btnEvent1.UseVisualStyleBackColor = true;
@@ -164,48 +172,15 @@
             this.dataRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataRecords.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Timestamp,
+            this.AmbientTemp,
+            this.LizardTemp,
             this.Note});
             this.dataRecords.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataRecords.Location = new System.Drawing.Point(0, 0);
             this.dataRecords.Name = "dataRecords";
-            this.dataRecords.Size = new System.Drawing.Size(265, 73);
+            this.dataRecords.Size = new System.Drawing.Size(463, 75);
             this.dataRecords.TabIndex = 1;
-            // 
-            // btnNewNote
-            // 
-            this.btnNewNote.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnNewNote.Location = new System.Drawing.Point(0, 73);
-            this.btnNewNote.Name = "btnNewNote";
-            this.btnNewNote.Size = new System.Drawing.Size(265, 36);
-            this.btnNewNote.TabIndex = 0;
-            this.btnNewNote.Text = "Make New Note";
-            this.btnNewNote.UseVisualStyleBackColor = true;
-            // 
-            // stpStatus
-            // 
-            this.stpStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblLizardName,
-            this.lblCurrentTemp});
-            this.stpStatus.Location = new System.Drawing.Point(0, 109);
-            this.stpStatus.Name = "stpStatus";
-            this.stpStatus.Size = new System.Drawing.Size(611, 24);
-            this.stpStatus.TabIndex = 1;
-            this.stpStatus.Text = "statusStrip1";
-            // 
-            // lblLizardName
-            // 
-            this.lblLizardName.Name = "lblLizardName";
-            this.lblLizardName.Size = new System.Drawing.Size(118, 19);
-            this.lblLizardName.Text = "toolStripStatusLabel1";
-            this.lblLizardName.ToolTipText = "The name of this lizard";
-            // 
-            // lblCurrentTemp
-            // 
-            this.lblCurrentTemp.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.lblCurrentTemp.Name = "lblCurrentTemp";
-            this.lblCurrentTemp.Size = new System.Drawing.Size(122, 19);
-            this.lblCurrentTemp.Text = "toolStripStatusLabel1";
-            this.lblCurrentTemp.ToolTipText = "The lizard\'s current temperature";
+            this.dataRecords.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataRecords_CellEndEdit);
             // 
             // Timestamp
             // 
@@ -213,19 +188,68 @@
             this.Timestamp.Name = "Timestamp";
             this.Timestamp.ReadOnly = true;
             // 
+            // AmbientTemp
+            // 
+            this.AmbientTemp.HeaderText = "Ambient";
+            this.AmbientTemp.Name = "AmbientTemp";
+            this.AmbientTemp.ReadOnly = true;
+            // 
+            // LizardTemp
+            // 
+            this.LizardTemp.HeaderText = "Lizard";
+            this.LizardTemp.Name = "LizardTemp";
+            this.LizardTemp.ReadOnly = true;
+            // 
             // Note
             // 
             this.Note.HeaderText = "Note";
             this.Note.Name = "Note";
             // 
+            // btnNewNote
+            // 
+            this.btnNewNote.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnNewNote.Location = new System.Drawing.Point(0, 75);
+            this.btnNewNote.Name = "btnNewNote";
+            this.btnNewNote.Size = new System.Drawing.Size(463, 36);
+            this.btnNewNote.TabIndex = 0;
+            this.btnNewNote.Text = "Make New Note";
+            this.btnNewNote.UseVisualStyleBackColor = true;
+            this.btnNewNote.Click += new System.EventHandler(this.btnNewNote_Click);
+            // 
+            // stpStatus
+            // 
+            this.stpStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblLizardName,
+            this.lblCurrentTemp});
+            this.stpStatus.Location = new System.Drawing.Point(0, 111);
+            this.stpStatus.Name = "stpStatus";
+            this.stpStatus.Size = new System.Drawing.Size(809, 22);
+            this.stpStatus.TabIndex = 1;
+            this.stpStatus.Text = "statusStrip1";
+            // 
+            // lblLizardName
+            // 
+            this.lblLizardName.Name = "lblLizardName";
+            this.lblLizardName.Size = new System.Drawing.Size(118, 17);
+            this.lblLizardName.Text = "toolStripStatusLabel1";
+            this.lblLizardName.ToolTipText = "The name of this lizard";
+            // 
+            // lblCurrentTemp
+            // 
+            this.lblCurrentTemp.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.lblCurrentTemp.Name = "lblCurrentTemp";
+            this.lblCurrentTemp.Size = new System.Drawing.Size(4, 17);
+            this.lblCurrentTemp.ToolTipText = "The lizard\'s current temperature";
+            // 
             // LizardMonitor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.sptOuter);
             this.Controls.Add(this.stpStatus);
             this.Name = "LizardMonitor";
-            this.Size = new System.Drawing.Size(611, 133);
+            this.Size = new System.Drawing.Size(809, 133);
             this.sptOuter.Panel1.ResumeLayout(false);
             this.sptOuter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sptOuter)).EndInit();
@@ -258,6 +282,8 @@
         private System.Windows.Forms.ToolStripStatusLabel lblLizardName;
         private System.Windows.Forms.ToolStripStatusLabel lblCurrentTemp;
         private System.Windows.Forms.DataGridViewTextBoxColumn Timestamp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn AmbientTemp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LizardTemp;
         private System.Windows.Forms.DataGridViewTextBoxColumn Note;
     }
 }

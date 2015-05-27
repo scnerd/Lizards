@@ -16,6 +16,21 @@ namespace Lizards
     {
         public static event NewAmbientTempHandler OnNewAmbientTemp;
 
+        public enum ArduinoStatus
+        {
+            None = (ushort)0x0000,
+            Preparing = (ushort)0x0001,
+            Ramping = (ushort)0x0002
+        }
+
+        private enum ArduinoSignal
+        {
+            Hold = (ushort)0x0001,
+            Start = (ushort)0x0002,
+            Stop = (ushort)0x0003,
+            Status = (ushort)0x0004
+        }
+
         public const int BAUD_RATE = 9600;
         public const Parity PARITY = Parity.Even;
         public static readonly StopBits STOP_BITS = StopBits.One;
@@ -30,12 +45,27 @@ namespace Lizards
         private static bool AlreadyWrote = false;
         public static LizardData[] Lizards { get; private set; }
 
+        private static StringBuilder DataReadLog = new StringBuilder();
+
         static ArduinoCommunicator()
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
             {
-                SendStopSignal();
-                SaveResults(false);
+                try
+                {
+                    SendStopSignal();
+                }
+                catch (Exception)
+                {
+                }
+
+                try
+                {
+                    SaveResults(false);
+                }
+                catch (Exception)
+                {
+                }
             });
         }
 
@@ -70,14 +100,14 @@ namespace Lizards
             Debug.Listeners.Add(new TextWriterTraceListener(Writer));
         }
 
-        public static void StartHoldingTemp()
+        public static void StartHoldingTemp(double Temp)
         {
-            SendHoldSignal();
+            SendHoldSignal(ConvertFromAmbientTemp(Temp));
         }
 
-        public static void StartRampingTemp()
+        public static void StartRampingTemp(double Ramp, double Target)
         {
-            SendStartSignal();
+            SendStartSignal(ConvertFromAmbientTemp(Ramp), ConvertFromAmbientTemp(Target));
             //Port.NewLine = END_OF_DATA_BLOCK;
             KeepRunning = true;
             Task ListenToArduino = new Task(() =>
@@ -95,6 +125,13 @@ namespace Lizards
             ListenToArduino.Start();
         }
 
+        public static ArduinoStatus Status()
+        {
+            SendStatusSignal();
+            var msg = ReadMessage();
+            return (ArduinoStatus) msg[0];
+        }
+
         private static byte[] ReadBytes(int Count)
         {
             return Enumerable.Range(0, Count)
@@ -104,12 +141,50 @@ namespace Lizards
                 .ToArray();
         }
 
+        private static ushort ReadChunk()
+        {
+            ushort val = BitConverter.ToUInt16(ReadBytes(2), 0);
+            DataReadLog.Append(string.Format("0x{0:X4} ", val));
+            return val;
+        }
+
+        private static ushort[] ReadMessage()
+        {
+            List<ushort> Messages = new List<ushort>();
+            ushort a, b, c;
+            a = b = c = 0;
+            while (!(a == 0xDEAD && b == 0xBEEF))
+            {
+                a = b;
+                b = ReadChunk();
+            }
+            b = ReadChunk();
+            c = ReadChunk();
+            while (!(b == 0xDEAD && c == 0xBEEF))
+            {
+                a = b;
+                b = c;
+                c = ReadChunk();
+                Messages.Add(a);
+            }
+            return Messages.ToArray();
+        }
+
         private static double[] ReadTemps()
         {
-            double ambient = ConvertAmbientTemp(BitConverter.ToUInt16(ReadBytes(2), 0));
-            List<double> lizard_temps =
-                Lizards.Select(junk => ConvertLizardTemp(BitConverter.ToUInt16(ReadBytes(2), 0))).ToList();
-            lizard_temps.Insert(0, ambient);
+            ushort[] Temps = ReadMessage();
+            List<double> lizard_temps = new List<double>();
+            try
+            {
+                double ambient = ConvertAmbientTemp(Temps[0]);
+                lizard_temps = Lizards.Select((junk, idx) => ConvertLizardTemp(Temps[idx + 1])).ToList();
+                lizard_temps.Insert(0, ambient);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Debug.WriteLine("Failed to read temperatures: Wrong number of temperatures read from Arduino");
+                DumpReadData();
+            }
             return lizard_temps.ToArray();
         }
 
@@ -119,24 +194,47 @@ namespace Lizards
             SendStopSignal();
         }
 
-        private static void SendHoldSignal()
+        private static void Send(ushort Chunk)
         {
-            
+            Port.Write(BitConverter.GetBytes(Chunk), 0, 2);
         }
 
-        private static void SendStartSignal()
+        private static void Send(ArduinoSignal Sig)
         {
-            
+            Send((ushort) Sig);
+        }
+
+        private static void SendHoldSignal(ushort Target)
+        {
+            Send(ArduinoSignal.Hold);
+            Send(Target);
+        }
+
+        private static void SendStartSignal(ushort Ramp, ushort Target)
+        {
+            Send(ArduinoSignal.Start);
+            Send(Ramp);
+            Send(Target);
         }
 
         private static void SendStopSignal()
         {
-            
+            Send(ArduinoSignal.Stop);
+        }
+
+        private static void SendStatusSignal()
+        {
+            Send(ArduinoSignal.Status);
         }
 
         private static double ConvertAmbientTemp(int Value)
         {
             return Value * AMBIENT_SCALE + AMBIENT_BASE;
+        }
+
+        private static ushort ConvertFromAmbientTemp(double Value)
+        {
+            return (ushort) Math.Round((Value - AMBIENT_BASE)/AMBIENT_SCALE);
         }
 
         private static double ConvertLizardTemp(int Value)
@@ -160,6 +258,13 @@ namespace Lizards
                 // Write out csv of results
             //}
             return path;
+        }
+
+        private static void DumpReadData()
+        {
+            Debug.WriteLine("Data read log:");
+            Debug.WriteLine(DataReadLog.ToString());
+            DataReadLog = new StringBuilder();
         }
     }
 }

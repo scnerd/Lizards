@@ -6,23 +6,41 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Lizards;
 
+////PICK UP RUNNING EXPERIMENT
 namespace LizardsGUI
 {
     public partial class InitExperiment : Form
     {
-        private string PrevNumLizards;
         public int NumLizards;
+        public int ReportInterval;
+        public string ArduinoPort;
+        public double HoldTemp, RampTemp, MaxTemp;
+
+        private int defaultNumLizards, defaultReportInterval;
+        private decimal defaultHold, defaultRamp, defaultMax;
 
         public InitExperiment()
         {
             InitializeComponent();
-            PrevNumLizards = txtNumLizards.Text;
+            defaultNumLizards = (int) numNumLizards.Value;
+            defaultReportInterval = (int)numReport.Value;
+            defaultHold = numHoldTemp.Value;
+            defaultRamp = numRampTemp.Value;
+            defaultMax = numMaxTemp.Value;
+            ResetComPorts();
         }
 
         private void InitExperiment_FormClosing(object sender, FormClosingEventArgs e)
         {
-            NumLizards = int.Parse(txtNumLizards.Text);
+            NumLizards = (int)numNumLizards.Value;
+            ReportInterval = (int) numReport.Value;
+            HoldTemp = (double) numHoldTemp.Value;
+            RampTemp = (double) numRampTemp.Value;
+            MaxTemp = (double) numMaxTemp.Value;
+            // This just drops an empty port name if there is no port selected (only happens when no ports are available, in which case we're closing anyway)
+            ArduinoPort = (cmbComPorts.SelectedItem ?? "").ToString();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -31,17 +49,66 @@ namespace LizardsGUI
             this.Close();
         }
 
-        private void txtNumLizards_Leave(object sender, EventArgs e)
+        private void ResetComPorts()
         {
-            try
+            bool insuranceCheck = true;
+            while (insuranceCheck)
             {
-                txtNumLizards.Text = Math.Max(1, int.Parse(txtNumLizards.Text)).ToString();
+                cmbComPorts.Items.Clear();
+                cmbComPorts.Items.AddRange(ArduinoCommunicator.GetPossiblePorts());
+                try
+                {
+                    cmbComPorts.SelectedIndex = 0;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    if (
+                        MessageBox.Show(
+                            "Please plug in your Arduino and ensure that it has a COM port (look under 'Ports' in Device Manager)",
+                            "Error: No Arduino Found",
+                            MessageBoxButtons.RetryCancel) == DialogResult.Cancel)
+                    {
+                        this.DialogResult = DialogResult.Cancel;
+                        Application.Exit();
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                insuranceCheck = false;
+                break;
             }
-            catch (Exception)
-            {
-                txtNumLizards.Text = PrevNumLizards;
-            }
-            PrevNumLizards = txtNumLizards.Text;
+        }
+
+        private void btnComPorts_Click(object sender, EventArgs e)
+        {
+            ResetComPorts();
+        }
+
+        private void btnNumLizards_Click(object sender, EventArgs e)
+        {
+            numNumLizards.Value = defaultNumLizards;
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            numReport.Value = defaultReportInterval;
+        }
+
+        private void btnHoldTemp_Click(object sender, EventArgs e)
+        {
+            numHoldTemp.Value = defaultHold;
+        }
+
+        private void btnRampTemp_Click(object sender, EventArgs e)
+        {
+            numRampTemp.Value = defaultRamp;
+        }
+
+        private void btnMaxTemp_Click(object sender, EventArgs e)
+        {
+            numMaxTemp.Value = defaultMax;
         }
     }
 }

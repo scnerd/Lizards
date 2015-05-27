@@ -12,8 +12,14 @@ namespace LizardsGUI
 {
     public partial class LizardMonitor : UserControl
     {
+        protected delegate void StaticResizeHandler(LizardMonitor sender, int NewPos);
+
+        protected static event StaticResizeHandler OuterResized;
+        protected static event StaticResizeHandler InnerResized;
+
         public const double MIN_TEMP = 20d;
         public const double MAX_TEMP = 55d;
+        public readonly string[] EVENTS = {"Event 1", "Event 2", "Event 3"};
 
         private LizardData _Lizard;
 
@@ -21,6 +27,8 @@ namespace LizardsGUI
         {
             InitializeComponent();
             gphTempGraph.Clear();
+            OuterResized += OnOuterResized;
+            InnerResized += OnInnerResized;
 
             demo_junk();
         }
@@ -38,9 +46,88 @@ namespace LizardsGUI
 
         public void OnNewData(LizardData sender, double NewTemp)
         {
-            gphTempGraph.Add((NewTemp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP));
-            lblCurrentTemp.Text = string.Format("Temp: {0}°C", NewTemp);
+            if (_Lizard.IsActive)
+            {
+                gphTempGraph.Add((NewTemp - MIN_TEMP)/(MAX_TEMP - MIN_TEMP));
+                lblCurrentTemp.Text = string.Format("Temp: {0:F2}°C", NewTemp);
+            }
         }
+
+        private void Event(Button ToDisable, Button ToEnable, int EventIndex)
+        {
+            if (ToDisable != null) ToDisable.Enabled = false;
+            if (ToEnable != null) ToEnable.Enabled = true;
+            _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, EVENTS[EventIndex]);
+            UpdateNotesTable();
+        }
+
+        private void btnEvent1_Click(object sender, EventArgs e)
+        {
+            Event(btnEvent1, btnEvent2, 0);
+        }
+
+        private void btnEvent2_Click(object sender, EventArgs e)
+        {
+            Event(btnEvent2, btnStop, 1);
+        }
+
+        private void btnEvent3_Click(object sender, EventArgs e)
+        {
+            Event(btnStop, null, 2);
+            _Lizard.Stop();
+        }
+
+        private void btnNewNote_Click(object sender, EventArgs e)
+        {
+            _Lizard.Notes.Add(new LizardData.Record(_Lizard));
+            UpdateNotesTable();
+        }
+
+        private void dataRecords_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            _Lizard.ImportantRecords.ElementAt(e.RowIndex).Note = dataRecords[e.ColumnIndex, e.RowIndex].Value.ToString();
+            UpdateNotesTable();
+        }
+
+        private void sptInner_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            InnerResized(this, sptInner.SplitterDistance);
+        }
+
+        private void sptOuter_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            OuterResized(this, sptOuter.SplitterDistance);
+        }
+
+        private void OnInnerResized(LizardMonitor sender, int NewPos)
+        {
+            if (sender != this)
+                sptInner.SplitterDistance = NewPos;
+        }
+
+        private void OnOuterResized(LizardMonitor sender, int NewPos)
+        {
+            if (sender != this)
+                sptOuter.SplitterDistance = NewPos;
+        }
+
+        private void UpdateNotesTable()
+        {
+            dataRecords.Rows.Clear();
+            foreach (LizardData.Record rec in _Lizard.ImportantRecords)
+            {
+                if(rec != null)
+                    dataRecords.Rows.Add(rec.Timestamp, rec.AmbientTemp, rec.LizardTemp, rec.Note);
+            }
+        }
+
+
+
+
+
+
+
+
 
         private void demo_junk()
         {
@@ -55,12 +142,9 @@ namespace LizardsGUI
         {
             bool Up = rnd.NextDouble() > d;
             d += rnd.NextDouble() * 0.1d * (Up ? 1 : -1);
-            gphTempGraph.Add(d);
-        }
-
-        private void btnEvent1_Click(object sender, EventArgs e)
-        {
-            dataRecords.Rows.Add(DateTime.Now, "Yo");
+            var newTemp = d * (MAX_TEMP - MIN_TEMP) + MIN_TEMP;
+            _Lizard.Temperatures.Add(newTemp);
+            OnNewData(this._Lizard, newTemp);
         }
     }
 }

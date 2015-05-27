@@ -9,6 +9,8 @@ namespace Lizards
 
     public class LizardData
     {
+        public static int NUM_EVENTS = 3;
+
         public class Record
         {
             public DateTime Timestamp;
@@ -32,16 +34,37 @@ namespace Lizards
         public double CurrentLizardTemp { get { return Temperatures.Last(); } }
         public static double CurrentAmbientTemp = double.NaN;
 
+        public bool IsActive { get; private set; }
+
+        public Record[] MainEvents = new Record[NUM_EVENTS]; 
+        public List<Record> Notes = new List<Record>();
+        public List<Record> TempRecords = new List<Record>(); 
+
+        public IEnumerable<Record> ImportantRecords
+        {
+            get { return MainEvents.Concat(Notes).Where(rec => rec != null).OrderBy(rec => rec.Timestamp); }
+        }
+
         public LizardData(int LizardNumber)
         {
             Number = LizardNumber;
+            IsActive = true;
         }
 
         internal void Update(double Temperature)
         {
-            Temperatures.Add(Temperature);
-            if(OnNewData != null)
-                OnNewData(this, Temperature);
+            if (IsActive)
+            {
+                Temperatures.Add(Temperature);
+                TempRecords.Add(new Record(this));
+                if (OnNewData != null)
+                    OnNewData(this, Temperature);
+            }
+        }
+
+        public void Stop()
+        {
+            IsActive = false;
         }
     }
 }
