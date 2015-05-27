@@ -29,8 +29,6 @@ namespace LizardsGUI
             gphTempGraph.Clear();
             OuterResized += OnOuterResized;
             InnerResized += OnInnerResized;
-
-            demo_junk();
         }
 
         public LizardData Lizard
@@ -41,6 +39,9 @@ namespace LizardsGUI
                 _Lizard = value;
                 _Lizard.OnNewData += new NewLizardDataHandler(this.OnNewData);
                 lblLizardName.Text = string.Format("Lizard {0}", value.Number + 1);
+
+                // TODO: JUNK
+                _Lizard.demo_junk();
             }
         }
 
@@ -119,32 +120,6 @@ namespace LizardsGUI
                 if(rec != null)
                     dataRecords.Rows.Add(rec.Timestamp, rec.AmbientTemp, rec.LizardTemp, rec.Note);
             }
-        }
-
-
-
-
-
-
-
-
-
-        private void demo_junk()
-        {
-            var timer1 = new Timer();
-            timer1.Interval = 1000;
-            timer1.Tick += timer1_Tick;
-            timer1.Start();
-        }
-        private Random rnd = new Random();
-        private double d = 0d;
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            bool Up = rnd.NextDouble() > d;
-            d += rnd.NextDouble() * 0.1d * (Up ? 1 : -1);
-            var newTemp = d * (MAX_TEMP - MIN_TEMP) + MIN_TEMP;
-            _Lizard.Temperatures.Add(newTemp);
-            OnNewData(this._Lizard, newTemp);
         }
     }
 }

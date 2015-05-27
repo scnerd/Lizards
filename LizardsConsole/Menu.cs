@@ -10,11 +10,11 @@ namespace TextMenu
     {
         internal char Selector;
         internal string Description;
-        internal Delegate Runner;
+        internal Action Runner;
 
-        public MenuItem(char Command, string Descrip, Delegate Response)
+        public MenuItem(char Command, string Descrip, Action Response)
         {
-            Selector = char.ToLower(Command);
+            Selector = Command;
             Description = Descrip;
             Runner = Response;
         }
@@ -54,18 +54,19 @@ namespace TextMenu
 
         protected List<MenuItem> mItems = new List<MenuItem>();
         public readonly Action CloseSelf;
-        private bool IsRunning = false;
+        private bool IsRunning = false, CaseSensitive;
         protected bool tempNoClear = false;
 
-        public Menu(TextWriter Out = null, TextReader In = null, bool ClearConsole = false)
+        public Menu(TextWriter Out = null, TextReader In = null, bool CaseSensitive = true, bool ClearConsole = false)
         {
-            OutStream = Out;
-            InStream = In;
+            OutStream = Out ?? StreamWriter.Null;
+            InStream = In ?? StreamReader.Null;
+            this.CaseSensitive = CaseSensitive;
             this.ClearConsole = ClearConsole;
             CloseSelf = new Action(() => { IsRunning = false; });
         }
 
-        public void AddItem(char Command, string Description, Delegate Response)
+        public void AddItem(char Command, string Description, Action Response)
         {
             AddItem(new MenuItem(Command, Description, Response));
         }
@@ -93,11 +94,16 @@ namespace TextMenu
             mItems.Clear();
         }
 
-        public void PrintLine(string s = "", bool EndLine = true)
+        public void Print(string s = "", params object[] FormatArgs)
         {
             if (ClearConsole && !tempNoClear) Console.Clear();
             tempNoClear = true;
-            OutStream.Write(s + (EndLine ? OutStream.NewLine : ""));
+            OutStream.Write(string.Format(s, FormatArgs));
+        }
+
+        public void PrintLine(string s = "", params object[] FormatArgs)
+        {
+            Print(s + OutStream.NewLine, FormatArgs);
         }
 
         public void PrintMenu(string InitialMessage = "Please choose an option:")
@@ -113,102 +119,106 @@ namespace TextMenu
             }
         }
 
-        public bool HandleResponse(string FailMessage = "Invalid command", bool ClearInputLine = true)
+        public bool HandleResponse(string FailMessage = "Invalid command", bool ClearInputLine = true, bool Retry = false)
         {
-            char input;
-            if (ClearInputLine)
+            string input_str = "";
+            MenuItem found = null;
+            while (string.IsNullOrEmpty(input_str) || found == null)
             {
-                var input_raw = InStream.ReadLine();
-                if (input_raw.Length > 0)
-                    input = input_raw[0];
-                else
+                char input;
+                if (ClearInputLine)
                 {
-                    this.PrintLine(FailMessage);
-                    return HandleResponse(FailMessage, ClearInputLine);
+                    input_str = InStream.ReadLine();
+                    if (!string.IsNullOrEmpty(input_str))
+                        input = input_str[0];
+                    else
+                    {
+                        if(FailMessage != null)
+                            this.PrintLine(FailMessage);
+                        if(Retry)
+                            continue;
+                        else
+                            return false;
+                    }
+                }
+                else
+                    input = (char) InStream.Read();
+                input = CaseSensitive ? char.ToLower(input) : input;
+
+                found = mItems.Find(m => (CaseSensitive ? m.Selector : char.ToLower(m.Selector)) == input);
+                if (found == null)
+                {
+                    if (FailMessage != null)
+                        this.PrintLine(FailMessage);
+                    if (Retry)
+                        continue;
+                    else
+                        return false;
                 }
             }
-            else
-                input = (char)InStream.Read();
-            input = char.ToLower(input);
 
-            MenuItem found = mItems.Find(m => m.Selector == input);
-            if (found == null)
-                if (OutStream != null)
-                {
-                    this.PrintLine(FailMessage);
-                    return HandleResponse(FailMessage, ClearInputLine);
-                }
-                else
-                    return false;
-
-            found.Runner.DynamicInvoke();
+            found.Runner();
             return true;
         }
 
-        public double RequestDouble(string Message = "Please input decimal number:", bool Retry = false)
+        public double? RequestDouble(string Message = "Please input decimal number:", bool Retry = false, double? Default = null)
         {
-            if (OutStream != null)
-                OutStream.WriteLine(Message);
+                OutStream.WriteLine(string.Format(Message, Default));
 
-            double Response;
+            double? Response = null;
+            double r;
             bool Success;
-            if (!Retry)
+            do
             {
-                double.TryParse(InStream.ReadLine(), out Response);
-            }
-            else
-            {
-                do
+                string resp = InStream.ReadLine();
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    Success = double.TryParse(InStream.ReadLine(), out Response);
-                    if (Success) break;
-                    if (OutStream != null)
-                        OutStream.WriteLine("Input error: input not a decimal number, please try again");
-                } while (!Success);
-            }
-            return Response;
+                    Success = double.TryParse(resp, out r);
+                    if (Success)
+                        return r;
+                }
+                else if (!Retry)
+                {
+                    return Default;
+                }
+                else
+                    Success = false;
+                if (OutStream != null)
+                    OutStream.WriteLine("Input error: input not an integer, please try again");
+            } while (Retry && !Success);
+            return Response; // Always null if you got here
         }
 
-        public int? RequestInt(string Message = "Please input integer number:", bool Retry = false)
+        public int? RequestInt(string Message = "Please input integer number:", bool Retry = false, int? Default = null)
         {
-            if (OutStream != null)
-                OutStream.WriteLine(Message);
+                OutStream.WriteLine(string.Format(Message, Default));
 
             int? Response = null;
             int r;
             bool Success;
-            if (!Retry)
+            do
             {
                 string resp = InStream.ReadLine();
-                if (resp.Length == 0)
-                    return null;
-
-                int.TryParse(resp, out r);
-                Response = (int?)r;
-            }
-            else
-            {
-                do
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    string resp = InStream.ReadLine();
-                    if (resp.Length != 0)
-                    {
-                        Success = int.TryParse(resp, out r);
-                        Response = (int?)r;
-                    }
-                    else
-                        Success = false;
-                    if (Success) break;
-                    if (OutStream != null)
-                        OutStream.WriteLine("Input error: input not an integer, please try again");
-                } while (!Success);
-            }
-            return Response;
+                    Success = int.TryParse(resp, out r);
+                    if(Success)
+                        return r;
+                }
+                else if (!Retry)
+                {
+                    return Default;
+                }
+                else
+                    Success = false;
+                if (OutStream != null)
+                    OutStream.WriteLine("Input error: input not an integer, please try again");
+            } while (Retry && !Success);
+            return Response; // Always null if you got here
         }
 
         public bool RequestYN(string Message = "Please input Y or N:", bool Retry = false)
         {
-            if (OutStream != null)
                 OutStream.WriteLine(Message);
 
             string Temp;
@@ -237,16 +247,15 @@ namespace TextMenu
 
         public string RequestString(string Message = "Please input a string:")
         {
-            if (OutStream != null)
                 OutStream.WriteLine(Message);
 
             return Console.ReadLine();
         }
 
-        public static T GetValue<T>(StreamReader InStream, Func<string, T> Converter, Func<string, bool> ValidChecker, string PromptMessage = "", System.IO.StreamWriter OutStream = null, bool Reprompt = false)
+        public static T GetValue<T>(StreamReader InStream, Func<string, T> Converter, Func<string, bool> ValidChecker, string PromptMessage = null, System.IO.StreamWriter OutStream = null, bool Reprompt = false)
         {
-            if (!PromptMessage.Equals(""))
-                OutStream.WriteLine(PromptMessage);
+            if (!string.IsNullOrEmpty(PromptMessage))
+                (OutStream ?? StreamWriter.Null).WriteLine(PromptMessage);
             string input = InStream.ReadLine();
             bool correct = ValidChecker(input);
             if (correct)
@@ -259,7 +268,7 @@ namespace TextMenu
 
         public void Run(string InitialMessage = null, string FailMessage = "Invalid command", bool ReprintOnFail = false)
         {
-            var ShowMenu = InitialMessage == null ? new Action(() => PrintMenu()) : new Action(() => PrintMenu(InitialMessage: InitialMessage));
+            var ShowMenu = InitialMessage == null ? new Action(() => PrintMenu(null)) : new Action(() => PrintMenu(InitialMessage: InitialMessage));
             IsRunning = true;
             while (IsRunning)
             {
@@ -274,17 +283,17 @@ namespace TextMenu
             }
         }
 
-        public int RequestIntInRange(int MinInc, int MaxExc, int? Cancel = null, TextReader InStream = null, TextWriter OutStream = null, string Message = "Please input number between {0} and {1}:")
+        public int? RequestIntInRange(int MinInc, int MaxExc, int? Cancel = null, int? Default = null, TextReader InStream = null, TextWriter OutStream = null, string Message = "Please input number between {0} and {1}:")
         {
             int? g;
-            while (((g = RequestInt(string.Format(Message, MinInc, MaxExc), Retry: true)) < MinInc ||
+            while (((g = RequestInt(string.Format(Message, MinInc, MaxExc, Default), Retry: true, Default: Default)) < MinInc ||
                 g >= MaxExc ||
                 g == null) &&
                 g != Cancel)
             {
                 // Do nothing, just loop again
             }
-            return (int)g;
+            return g ?? Default;
         }
     }
 

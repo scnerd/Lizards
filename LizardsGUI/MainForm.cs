@@ -56,7 +56,7 @@ namespace LizardsGUI
             }
             tblLizards.ResumeLayout();
 
-            ArduinoCommunicator.OnNewAmbientTemp +=ArduinoCommunicator_OnNewAmbientTemp;
+            ArduinoCommunicator.OnNewAmbientTemp += ArduinoCommunicator_OnNewAmbientTemp;
         }
 
         private void ArduinoCommunicator_OnNewAmbientTemp(double newTemp)

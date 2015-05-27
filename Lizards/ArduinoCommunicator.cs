@@ -45,6 +45,8 @@ namespace Lizards
         private static bool AlreadyWrote = false;
         public static LizardData[] Lizards { get; private set; }
 
+        public static DateTime StartTime { get; private set; }
+
         private static StringBuilder DataReadLog = new StringBuilder();
 
         static ArduinoCommunicator()
@@ -109,6 +111,7 @@ namespace Lizards
         {
             SendStartSignal(ConvertFromAmbientTemp(Ramp), ConvertFromAmbientTemp(Target));
             //Port.NewLine = END_OF_DATA_BLOCK;
+            StartTime = DateTime.Now;
             KeepRunning = true;
             Task ListenToArduino = new Task(() =>
             {
@@ -192,6 +195,12 @@ namespace Lizards
         {
             KeepRunning = false;
             SendStopSignal();
+        }
+
+        public static void ForceStop()
+        {
+            Port.Close();
+            Port.Open();
         }
 
         private static void Send(ushort Chunk)

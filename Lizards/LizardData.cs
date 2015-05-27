@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 namespace Lizards
 {
@@ -65,6 +66,32 @@ namespace Lizards
         public void Stop()
         {
             IsActive = false;
+        }
+
+
+
+
+
+
+
+
+
+        public void demo_junk()
+        {
+            var timer1 = new Timer();
+            rnd = new Random(this.Number);
+            timer1.Interval = 1000;
+            timer1.Elapsed += timer1_Tick;
+            timer1.Start();
+        }
+        private Random rnd;
+        private double d = 0d;
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            bool Up = rnd.NextDouble() > d;
+            d += rnd.NextDouble() * 0.1d * (Up ? 1 : -1);
+            var newTemp = d * (50 - 27) + 27;
+            Update(newTemp);
         }
     }
 }
