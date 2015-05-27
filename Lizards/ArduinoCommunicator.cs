@@ -5,6 +5,7 @@ using System.Text;
 using System.IO.Ports;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Remoting.Channels;
 
@@ -37,6 +38,7 @@ namespace Lizards
         public const int BITS_PER_DATA = 8;
         //public const string END_OF_DATA_BLOCK = "";
 
+        public const int DEFAULT_SAVE_INTERVAL = 15;
         public const double AMBIENT_SCALE = 1/16d, AMBIENT_BASE = 0d;
         public const double LIZARD_SCALE = 1/16d, LIZARD_BASE = 0d;
 
@@ -63,12 +65,13 @@ namespace Lizards
 
                 try
                 {
-                    SaveResults(false);
+                    SaveResults(DEFAULT_SAVE_INTERVAL, false);
                 }
                 catch (Exception)
                 {
                 }
             });
+            StartTime = DateTime.Now; // This should get overwritten by the start of the experiment, but just in case
         }
 
         public static string[] GetPossiblePorts()
@@ -121,8 +124,12 @@ namespace Lizards
                     OnNewAmbientTemp(temps[0]);
                     LizardData.CurrentAmbientTemp = temps[0];
                     temps = temps.Skip(1).ToArray(); // Drop the first value, since we've used it already
-                    foreach(var liz_temp in Lizards.Zip(temps, (liz, temp) => new Tuple<LizardData, double>(liz, temp)))
-                        liz_temp.Item1.Update(liz_temp.Item2);
+                    lock (Lizards)
+                    {
+                        foreach (
+                            var liz_temp in Lizards.Zip(temps, (liz, temp) => new Tuple<LizardData, double>(liz, temp)))
+                            liz_temp.Item1.Update(liz_temp.Item2);
+                    }
                 }
             });
             ListenToArduino.Start();
@@ -256,17 +263,69 @@ namespace Lizards
             return Others.Aggregate((a, b) => a + Base + b);
         }
 
-        public static string SaveResults(bool WriteEvenIfAlreadyWrote = true)
+        public static string SaveResults(int ReportInterval, bool WriteEvenIfAlreadyWrote = true)
         {
             if (AlreadyWrote && !WriteEvenIfAlreadyWrote)
                 return null;
 
-            string path = string.Format("Lizard Results {0:u}.csv", DateTime.UtcNow).Replace(":", "_");
-            //using (StreamWriter file = File.CreateText(path)) // Need to make sure you don't overwrite existing file
-            //{
-                // Write out csv of results
-            //}
-            return path;
+            string Dir = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Lizards";
+            if (!Directory.Exists(Dir))
+                Directory.CreateDirectory(Dir);
+            string Now = DateTime.UtcNow.ToString("u").Replace(":", "_");
+            string Path = string.Format(@"{1}\Lizard Results {0}.csv", Now, Dir);
+            StringBuilder OutputData = new StringBuilder();
+
+            Func<DateTime, string> Format = (dt) => dt == default(DateTime) ? "" : (dt - StartTime).ToString("g");
+
+            lock (Lizards)
+            {
+                OutputData.AppendLine(string.Format("Start time,{0:G}", StartTime));
+                OutputData.AppendLine();
+
+                OutputData.AppendLine(",Ambient," +
+                                      ",".Combine(
+                                          Lizards.Select(liz => string.Format("Lizard {0}", liz.Number + 1)).ToArray()));
+                for (int i = 0; i < LizardData.NUM_EVENTS; i++)
+                    OutputData.AppendLine(string.Format("{0},,{1}", LizardData.EVENTS[i],
+                        ",".Combine(
+                            Lizards.Select(liz => liz.MainEvents[i] == null ? "" : Format(liz.MainEvents[i].Timestamp))
+                                .ToArray())));
+
+                int mult = 0;
+                Func<DateTime> CurrentTime = () => StartTime + TimeSpan.FromSeconds(mult*ReportInterval);
+                while (
+                    Lizards.Any(
+                        liz =>
+                            liz.TempRecords.Last().Timestamp > CurrentTime()))
+                {
+                    var CurTimeTemp = CurrentTime();
+                    var LizardRecords =
+                        Lizards.Select(liz => liz.TempRecords.FirstOrDefault(rec => rec.Timestamp > CurTimeTemp))
+                            .ToArray();
+                    OutputData.AppendLine(string.Format("{0},{1:F2},{2}", Format(CurrentTime()),
+                        LizardRecords.Average(rec => rec.AmbientTemp),
+                        ",".Combine(LizardRecords.Select(rec => rec.LizardTemp.ToString("F2")).ToArray())));
+                    mult++;
+                }
+
+                OutputData.AppendLine();
+                OutputData.AppendLine("Lizard,Timestamp,Lizard Temp, Ambient Temp, Note");
+                foreach (
+                    Tuple<LizardData, LizardData.Record> rec in
+                        Lizards.SelectMany(
+                            liz =>
+                                liz.ImportantRecords.Select(rec => new Tuple<LizardData, LizardData.Record>(liz, rec)))
+                            .OrderBy(rec => rec.Item2.Timestamp))
+                {
+                    OutputData.AppendLine(string.Format("Lizard {0},{1},{2},{3},{4}", rec.Item1.Number + 1,
+                        Format(rec.Item2.Timestamp),
+                        rec.Item2.LizardTemp, rec.Item2.AmbientTemp, rec.Item2.Note));
+                }
+            }
+
+            File.WriteAllText(Path, OutputData.ToString());
+
+            return Path;
         }
 
         private static void DumpReadData()

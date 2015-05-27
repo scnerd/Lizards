@@ -119,7 +119,7 @@ namespace LizardsConsole
 
         private void _SaveData()
         {
-            ArduinoCommunicator.SaveResults(true);
+            MainMenu.PrintLine(ArduinoCommunicator.SaveResults(ReportInterval, true));
         }
 
         private void _Quit()

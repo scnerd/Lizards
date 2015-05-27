@@ -10,7 +10,8 @@ namespace Lizards
 
     public class LizardData
     {
-        public static int NUM_EVENTS = 3;
+        public static string[] EVENTS = { "Event 1", "Event 2", "Event 3 (stop)" };
+        public static int NUM_EVENTS = EVENTS.Length;
 
         public class Record
         {
@@ -91,7 +92,10 @@ namespace Lizards
             bool Up = rnd.NextDouble() > d;
             d += rnd.NextDouble() * 0.1d * (Up ? 1 : -1);
             var newTemp = d * (50 - 27) + 27;
-            Update(newTemp);
+            lock (ArduinoCommunicator.Lizards)
+            {
+                Update(newTemp);
+            }
         }
     }
 }
