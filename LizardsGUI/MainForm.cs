@@ -33,28 +33,6 @@ namespace LizardsGUI
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            bool NeedToInit = true;
-            if(ArduinoCommunicator.CheckForRunningExperiment())
-            {
-                DateTime StartTime;
-                ArduinoCommunicator.GetRunningExperiment(out StartTime, out PortName, out NumLizards, out ReportInterval, out HoldTemp, out RampTemp, out MaxTemp);
-                string Lines = "";
-                Lines += "\nStart time: " + StartTime.ToString();
-                Lines += "\nPort name: " + PortName;
-                Lines += "\nNumber of lizards: " + NumLizards.ToString();
-                Lines += "\nReport interval: " + ReportInterval.ToString();
-                Lines += "\nHold temp: " + HoldTemp.ToString("F2");
-                Lines += "\nRamp rate: " + RampTemp.ToString("F2");
-                Lines += "\nMax temp: " + MaxTemp.ToString("F2");
-                if (MessageBox.Show(string.Format("Previously running experiment found, resume?\n{0}", Lines), "Resume Experiment", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
-                    NeedToInit = false;
-                else
-                {
-                    ArduinoCommunicator.DeleteExperimentSettingsFile();
-                }
-            }
-            if (NeedToInit)
-            {
                 InitExperiment init = new InitExperiment();
                 if (init.ShowDialog() == DialogResult.Cancel)
                 {
@@ -68,11 +46,9 @@ namespace LizardsGUI
                 HoldTemp = init.HoldTemp;
                 RampTemp = init.RampTemp;
                 MaxTemp = init.MaxTemp;
-            }
 
             ArduinoCommunicator.InitializeLizards(NumLizards);
             ArduinoCommunicator.Connect(PortName);
-            ArduinoCommunicator.ResyncWithArduino(); // Also holds until Arduino's ready
 
             tblLizards.SuspendLayout();
             tblLizards.RowStyles.Clear();
@@ -102,7 +78,6 @@ namespace LizardsGUI
 
         private void btnRamp_Click(object sender, EventArgs e)
         {
-            ArduinoCommunicator.SaveExperimentSettings(PortName, NumLizards, ReportInterval, HoldTemp, RampTemp, MaxTemp);
             ArduinoCommunicator.StartRampingTemp(RampTemp, MaxTemp);
         }
 

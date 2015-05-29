@@ -114,26 +114,17 @@ namespace Lizards
 
         public static event NewAmbientTempHandler OnNewAmbientTemp;
 
-        public enum ArduinoStatus
-        {
-            None = (ushort)0x0000,
-            Preparing = (ushort)0x0001,
-            Ramping = (ushort)0x0002
-        }
-
         private enum ArduinoSignal
         {
             Hold = (ushort)0x0001,
             Start = (ushort)0x0002,
-            Stop = (ushort)0x0003,
-            Status = (ushort)0x0004
+            Stop = (ushort)0x0003
         }
 
         public const int BAUD_RATE = 9600;
         public const Parity PARITY = Parity.Even;
         public static readonly StopBits STOP_BITS = StopBits.One;
         public const int BITS_PER_DATA = 8;
-        private const string RUN_FILE = "experiment.txt";
 
         public const int DEFAULT_SAVE_INTERVAL = 15;
         public const double AMBIENT_SCALE = 1/16d, AMBIENT_BASE = 0d;
@@ -249,16 +240,6 @@ namespace Lizards
             //Port.NewLine = END_OF_DATA_BLOCK;
         }
 
-        public static ArduinoStatus Status()
-        {
-            ReportDebug("Requesting Arduino status");
-            SendStatusSignal();
-            var msg = ReadMessage();
-            var res = (ArduinoStatus) msg[0];
-            ReportDebug("Current Arduino status: {0}", Enum.GetName(typeof(ArduinoStatus), res));
-            return res;
-        }
-
         private static byte[] ReadBytes(int Count)
         {
             return Enumerable.Range(0, Count)
@@ -321,7 +302,6 @@ namespace Lizards
             ExperimentRunning = false;
             KeepRunning = false;
             SendStopSignal();
-            DeleteExperimentSettingsFile();
         }
 
         public static void ForceStop()
@@ -330,7 +310,6 @@ namespace Lizards
             ExperimentRunning = false;
             Port.Close();
             Port.Open();
-            DeleteExperimentSettingsFile();
         }
 
         private static void Send(ushort Chunk)
@@ -359,11 +338,6 @@ namespace Lizards
         private static void SendStopSignal()
         {
             Send(ArduinoSignal.Stop);
-        }
-
-        private static void SendStatusSignal()
-        {
-            Send(ArduinoSignal.Status);
         }
 
         internal static double ConvertAmbientTemp(int Value)
@@ -474,51 +448,6 @@ namespace Lizards
             ReportDebug("Data read log:");
             ReportDebug(DataReadLog.ToString());
             DataReadLog = new StringBuilder();
-        }
-
-        public static void SaveExperimentSettings(string PortName, int NumLizards, int ReportInterval, double StartTemp, double RampTemp, double MaxTemp)
-        {
-            File.WriteAllLines(RUN_FILE,
-                (new object[] { DateTime.Now, PortName, NumLizards, ReportInterval, StartTemp, RampTemp, MaxTemp })
-                .Select(obj => obj.ToString()));
-        }
-
-        public static bool CheckForRunningExperiment()
-        {
-            return File.Exists(RUN_FILE);
-        }
-
-        public static void DeleteExperimentSettingsFile()
-        {
-            if (File.Exists(RUN_FILE))
-                File.Delete(RUN_FILE);
-        }
-
-        public static void GetRunningExperiment(out DateTime SaveTime, out string PortName, out int NumLizards, out int ReportInterval, out double StartTemp, out double RampTemp, out double MaxTemp)
-        {
-            string[] Lines = File.ReadAllLines(RUN_FILE);
-            SaveTime = DateTime.Parse(Lines[0]);
-            PortName = Lines[1];
-            NumLizards = int.Parse(Lines[2]);
-            ReportInterval = int.Parse(Lines[3]);
-            StartTemp = double.Parse(Lines[4]);
-            RampTemp = double.Parse(Lines[5]);
-            MaxTemp = double.Parse(Lines[6]);
-        }
-
-        public static void ResyncWithArduino()
-        {
-            var status = Status();
-            switch(status)
-            {
-                case ArduinoStatus.None:
-                    return;
-                case ArduinoStatus.Preparing:
-                    return;
-                case ArduinoStatus.Ramping:
-                    ExperimentStarted = ExperimentRunning = true;
-                    break;
-            }
         }
     }
 }
