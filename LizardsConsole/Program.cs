@@ -79,17 +79,17 @@ namespace LizardsConsole
 
         private void _MainMenuHelp()
         {
-            Console.WriteLine("Placeholder main menu help text");
+            MainMenu.PrintLine("Placeholder main menu help text");
         }
 
         private void _LizardsHelp()
         {
-            Console.WriteLine("Placeholder lizards menu help text");
+            LizardsMenu.PrintLine("Placeholder lizards menu help text");
         }
 
         private void _ControlHelp()
         {
-            Console.WriteLine("Placeholder control menu help text");
+            ControlMenu.PrintLine("Placeholder control menu help text");
         }
 
         private void _Temperatures()
@@ -185,8 +185,7 @@ namespace LizardsConsole
             // JUNK
             foreach (LizardData liz in ArduinoCommunicator.Lizards)
             {
-                liz.Temperatures.Add(30);
-                liz.demo_junk();
+
             }
             LizardData.CurrentAmbientTemp = 35;
 

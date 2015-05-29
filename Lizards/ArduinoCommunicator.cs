@@ -8,13 +8,110 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Remoting.Channels;
+using System.Collections.Concurrent;
 
 namespace Lizards
 {
+    // TODO: Comment out this line to return to using the actual serial port library
+    using SerialPort = FakeSerialPort;
+    using System.Timers;
     public delegate void NewAmbientTempHandler(double newTemp);
+
+    public class FakeSerialPort
+    {
+        BlockingCollection<byte> ReadyToRead = new BlockingCollection<byte>();
+        Queue<byte> Written = new Queue<byte>();
+
+        static FakeSerialPort ()
+        {
+            LizardData.CurrentAmbientTemp = 35;
+        }
+
+        public FakeSerialPort(string a, int b, Parity c)
+        {
+            IsOpen = false;
+        }
+
+        internal static string[] GetPortNames()
+        {
+            return new[] {"COM?"};
+        }
+
+        public StopBits StopBits { get; set; }
+
+        public int DataBits { get; set; }
+
+        public bool DtrEnable { get; set; }
+
+        public bool IsOpen { get; private set; }
+
+        internal void Open()
+        {
+            IsOpen = true;
+            demo_junk();
+        }
+
+        internal int ReadByte()
+        {
+            return IsOpen ? ReadyToRead.Take() : -1;
+        }
+
+        internal void Close()
+        {
+            IsOpen = false;
+        }
+
+        internal void Write(byte[] data, int offset, int count)
+        {
+            for (int i = offset; i < offset + count; i++)
+                Written.Enqueue(data[i]);
+        }
+
+
+        public void demo_junk()
+        {
+            var timer1 = new Timer();
+            ds = new double[ArduinoCommunicator.Lizards.Length + 1];
+            rnd = new Random();
+            timer1.Interval = 100;
+            timer1.Elapsed += timer1_Tick;
+            timer1.Start();
+        }
+        private Random rnd;
+        private double[] ds;
+        private double MAX = 50, MIN = 27;
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            for (int i = 0; i < ds.Length; i++)
+            {
+                bool Up = rnd.NextDouble() > ds[i];
+                ds[i] += rnd.NextDouble() * 0.1d * (Up ? 1 : -1);
+            }
+            Push(0xDEAD);
+            Push(0xBEEF);
+            foreach(double d in ds)
+            {
+                if (d == ds[0])
+                    Push(ArduinoCommunicator.ConvertFromAmbientTemp(d * (MAX - MIN) + MIN));
+                else
+                    Push(ArduinoCommunicator.ConvertFromLizardTemp(d * (MAX - MIN) + MIN));
+            }
+            Push(0xDEAD);
+            Push(0xBEEF);
+        }
+
+        private void Push(ushort data)
+        {
+            byte[] bytes = BitConverter.GetBytes(data);
+            foreach (byte b in bytes)
+                ReadyToRead.Add(b);
+        }
+    }
 
     public static class ArduinoCommunicator
     {
+        
+
         public static event NewAmbientTempHandler OnNewAmbientTemp;
 
         public enum ArduinoStatus
@@ -36,7 +133,7 @@ namespace Lizards
         public const Parity PARITY = Parity.Even;
         public static readonly StopBits STOP_BITS = StopBits.One;
         public const int BITS_PER_DATA = 8;
-        //public const string END_OF_DATA_BLOCK = "";
+        private const string RUN_FILE = "experiment.txt";
 
         public const int DEFAULT_SAVE_INTERVAL = 15;
         public const double AMBIENT_SCALE = 1/16d, AMBIENT_BASE = 0d;
@@ -44,6 +141,8 @@ namespace Lizards
 
         private static SerialPort Port;
         private static bool KeepRunning;
+        private static bool ExperimentRunning = false;
+        private static bool ExperimentStarted = false;
         private static bool AlreadyWrote = false;
         public static LizardData[] Lizards { get; private set; }
 
@@ -62,6 +161,8 @@ namespace Lizards
                 catch (Exception)
                 {
                 }
+                if (Port != null && Port.IsOpen)
+                    Port.Close();
 
                 try
                 {
@@ -71,7 +172,7 @@ namespace Lizards
                 {
                 }
             });
-            StartTime = DateTime.Now; // This should get overwritten by the start of the experiment, but just in case
+            //StartTime = DateTime.Now; // This should get overwritten by the start of the experiment, but just in case
         }
 
         public static string[] GetPossiblePorts()
@@ -81,6 +182,7 @@ namespace Lizards
 
         public static void Connect(string ToConnect)
         {
+            ReportDebug("Connecting to Arduino");
             // Prepare settings to connect to Arduino
             Port = new SerialPort(ToConnect, BAUD_RATE, PARITY);
             Port.StopBits = STOP_BITS;
@@ -89,35 +191,12 @@ namespace Lizards
             Port.DtrEnable = true;
             // Open the port (throws System.UnauthorizedAccessException if the port is already open elsewhere)
             Port.Open();
-        }
 
-        public static LizardData[] InitializeLizards(int NumLizards)
-        {
-            Lizards = new LizardData[NumLizards];
-            for(int i = 0; i < NumLizards; i++)
-                Lizards[i] = new LizardData(i);
 
-            return Lizards;
-        }
-
-        public static void AddDebugOutput(TextWriter Writer)
-        {
-            Debug.Listeners.Add(new TextWriterTraceListener(Writer));
-        }
-
-        public static void StartHoldingTemp(double Temp)
-        {
-            SendHoldSignal(ConvertFromAmbientTemp(Temp));
-        }
-
-        public static void StartRampingTemp(double Ramp, double Target)
-        {
-            SendStartSignal(ConvertFromAmbientTemp(Ramp), ConvertFromAmbientTemp(Target));
-            //Port.NewLine = END_OF_DATA_BLOCK;
-            StartTime = DateTime.Now;
             KeepRunning = true;
             Task ListenToArduino = new Task(() =>
             {
+                ReportDebug("Beginning to listen for data from Arduino");
                 while (KeepRunning)
                 {
                     double[] temps = ReadTemps();
@@ -135,18 +214,56 @@ namespace Lizards
             ListenToArduino.Start();
         }
 
+        public static LizardData[] InitializeLizards(int NumLizards)
+        {
+            Lizards = new LizardData[NumLizards];
+            for(int i = 0; i < NumLizards; i++)
+                Lizards[i] = new LizardData(i);
+
+            return Lizards;
+        }
+
+        public static void AddDebugOutput(TextWriter Writer)
+        {
+            Debug.Listeners.Add(new TextWriterTraceListener(Writer));
+        }
+
+        internal static void ReportDebug(string format, params object[] args)
+        {
+            Debug.WriteLine("{0} - {1}", StartTime != default(DateTime) ? (DateTime.Now - StartTime).ToString(@"%h\:mm\:ss") : DateTime.Now.ToString("H:mm:ss"), string.Format(format, args));
+        }
+
+        public static void StartHoldingTemp(double Temp)
+        {
+            ReportDebug("Beginning to hold {0:F2}°C", Temp);
+            SendHoldSignal(ConvertFromAmbientTemp(Temp));
+        }
+
+        public static void StartRampingTemp(double Ramp, double Target)
+        {
+            ReportDebug("Marking start time");
+            ExperimentStarted = ExperimentRunning = true;
+            StartTime = DateTime.Now;
+            ReportDebug("Starting ramp of {0:F2}°C to {1:F2}°C", Ramp, Target);
+            SendStartSignal(ConvertFromAmbientTemp(Ramp), ConvertFromAmbientTemp(Target));
+            //Port.NewLine = END_OF_DATA_BLOCK;
+        }
+
         public static ArduinoStatus Status()
         {
+            ReportDebug("Requesting Arduino status");
             SendStatusSignal();
             var msg = ReadMessage();
-            return (ArduinoStatus) msg[0];
+            var res = (ArduinoStatus) msg[0];
+            ReportDebug("Current Arduino status: {0}", Enum.GetName(typeof(ArduinoStatus), res));
+            return res;
         }
 
         private static byte[] ReadBytes(int Count)
         {
             return Enumerable.Range(0, Count)
                 .Select(idx => Port.ReadByte())
-                .Where(val => val > 0) // Ignore values given if the port is closed
+                .Where(val => val >= 0) // Ignore values given if the port is closed
                 .Select(i => (byte)i)
                 .ToArray();
         }
@@ -192,7 +309,7 @@ namespace Lizards
             }
             catch (IndexOutOfRangeException)
             {
-                Debug.WriteLine("Failed to read temperatures: Wrong number of temperatures read from Arduino");
+                ReportDebug("Failed to read temperatures: Wrong number of temperatures read from Arduino");
                 DumpReadData();
             }
             return lizard_temps.ToArray();
@@ -200,14 +317,20 @@ namespace Lizards
 
         public static void StopExperiment()
         {
+            ReportDebug("Stopping experiment");
+            ExperimentRunning = false;
             KeepRunning = false;
             SendStopSignal();
+            DeleteExperimentSettingsFile();
         }
 
         public static void ForceStop()
         {
+            ReportDebug("Resetting Arduino to terminate heating");
+            ExperimentRunning = false;
             Port.Close();
             Port.Open();
+            DeleteExperimentSettingsFile();
         }
 
         private static void Send(ushort Chunk)
@@ -243,19 +366,24 @@ namespace Lizards
             Send(ArduinoSignal.Status);
         }
 
-        private static double ConvertAmbientTemp(int Value)
+        internal static double ConvertAmbientTemp(int Value)
         {
             return Value * AMBIENT_SCALE + AMBIENT_BASE;
         }
 
-        private static ushort ConvertFromAmbientTemp(double Value)
+        internal static ushort ConvertFromAmbientTemp(double Value)
         {
             return (ushort) Math.Round((Value - AMBIENT_BASE)/AMBIENT_SCALE);
         }
 
-        private static double ConvertLizardTemp(int Value)
+        internal static double ConvertLizardTemp(int Value)
         {
             return Value * LIZARD_SCALE + LIZARD_BASE;
+        }
+
+        internal static ushort ConvertFromLizardTemp(double Value)
+        {
+            return (ushort) Math.Round((Value - LIZARD_BASE) / LIZARD_SCALE);
         }
 
         public static string Combine(this string Base, params string[] Others)
@@ -265,8 +393,20 @@ namespace Lizards
 
         public static string SaveResults(int ReportInterval, bool WriteEvenIfAlreadyWrote = true)
         {
+            ReportDebug("Beginning to save results");
+
             if (AlreadyWrote && !WriteEvenIfAlreadyWrote)
+            {
+                ReportDebug("Already wrote to file");
                 return null;
+            }
+            if(!ExperimentStarted)
+            {
+                ReportDebug("Experiement hasn't been started yet");
+                return null;
+            }
+
+            StartTime = StartTime != default(DateTime) ? StartTime : new DateTime(0);
 
             string Dir = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Lizards";
             if (!Directory.Exists(Dir))
@@ -303,8 +443,8 @@ namespace Lizards
                         Lizards.Select(liz => liz.TempRecords.FirstOrDefault(rec => rec.Timestamp > CurTimeTemp))
                             .ToArray();
                     OutputData.AppendLine(string.Format("{0},{1:F2},{2}", Format(CurrentTime()),
-                        LizardRecords.Average(rec => rec.AmbientTemp),
-                        ",".Combine(LizardRecords.Select(rec => rec.LizardTemp.ToString("F2")).ToArray())));
+                        LizardRecords.Where(rec => rec != null).Average(rec => rec.AmbientTemp),
+                        ",".Combine(LizardRecords.Select(rec => rec == null ? "" : rec.LizardTemp.ToString("F2")).ToArray())));
                     mult++;
                 }
 
@@ -324,15 +464,61 @@ namespace Lizards
             }
 
             File.WriteAllText(Path, OutputData.ToString());
+            ReportDebug("Results saved to: {0}", Path);
 
             return Path;
         }
 
         private static void DumpReadData()
         {
-            Debug.WriteLine("Data read log:");
-            Debug.WriteLine(DataReadLog.ToString());
+            ReportDebug("Data read log:");
+            ReportDebug(DataReadLog.ToString());
             DataReadLog = new StringBuilder();
+        }
+
+        public static void SaveExperimentSettings(string PortName, int NumLizards, int ReportInterval, double StartTemp, double RampTemp, double MaxTemp)
+        {
+            File.WriteAllLines(RUN_FILE,
+                (new object[] { DateTime.Now, PortName, NumLizards, ReportInterval, StartTemp, RampTemp, MaxTemp })
+                .Select(obj => obj.ToString()));
+        }
+
+        public static bool CheckForRunningExperiment()
+        {
+            return File.Exists(RUN_FILE);
+        }
+
+        public static void DeleteExperimentSettingsFile()
+        {
+            if (File.Exists(RUN_FILE))
+                File.Delete(RUN_FILE);
+        }
+
+        public static void GetRunningExperiment(out DateTime SaveTime, out string PortName, out int NumLizards, out int ReportInterval, out double StartTemp, out double RampTemp, out double MaxTemp)
+        {
+            string[] Lines = File.ReadAllLines(RUN_FILE);
+            SaveTime = DateTime.Parse(Lines[0]);
+            PortName = Lines[1];
+            NumLizards = int.Parse(Lines[2]);
+            ReportInterval = int.Parse(Lines[3]);
+            StartTemp = double.Parse(Lines[4]);
+            RampTemp = double.Parse(Lines[5]);
+            MaxTemp = double.Parse(Lines[6]);
+        }
+
+        public static void ResyncWithArduino()
+        {
+            var status = Status();
+            switch(status)
+            {
+                case ArduinoStatus.None:
+                    return;
+                case ArduinoStatus.Preparing:
+                    return;
+                case ArduinoStatus.Ramping:
+                    ExperimentStarted = ExperimentRunning = true;
+                    break;
+            }
         }
     }
 }

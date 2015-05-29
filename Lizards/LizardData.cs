@@ -40,11 +40,18 @@ namespace Lizards
 
         public Record[] MainEvents = new Record[NUM_EVENTS]; 
         public List<Record> Notes = new List<Record>();
-        public List<Record> TempRecords = new List<Record>(); 
+        public List<Record> TempRecords = new List<Record>();
+        public readonly object AllNotesLock = new object();
 
         public IEnumerable<Record> ImportantRecords
         {
-            get { return MainEvents.Concat(Notes).Where(rec => rec != null).OrderBy(rec => rec.Timestamp); }
+            get
+            {
+                lock (AllNotesLock)
+                {
+                    return MainEvents.Concat(Notes).Where(rec => rec != null).OrderBy(rec => rec.Timestamp);
+                }
+            }
         }
 
         public LizardData(int LizardNumber)
@@ -67,35 +74,6 @@ namespace Lizards
         public void Stop()
         {
             IsActive = false;
-        }
-
-
-
-
-
-
-
-
-
-        public void demo_junk()
-        {
-            var timer1 = new Timer();
-            rnd = new Random(this.Number);
-            timer1.Interval = 1000;
-            timer1.Elapsed += timer1_Tick;
-            timer1.Start();
-        }
-        private Random rnd;
-        private double d = 0d;
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            bool Up = rnd.NextDouble() > d;
-            d += rnd.NextDouble() * 0.1d * (Up ? 1 : -1);
-            var newTemp = d * (50 - 27) + 27;
-            lock (ArduinoCommunicator.Lizards)
-            {
-                Update(newTemp);
-            }
         }
     }
 }

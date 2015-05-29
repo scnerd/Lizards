@@ -27,6 +27,14 @@ namespace LineGraph
 
         private uint CurrentInterval = 0;
 
+        private double _LowerLimit = 0d;
+        private double _UpperLimit = 1d;
+        private bool _AutoAdjustLimits = false;
+
+        private bool _ShowDemoVals = false;
+
+        private bool IsReadyToDraw = false;
+
         public Color FillColor
         {
             get { return Color.FromArgb(Transparency, LineColor.R, LineColor.G, LineColor.B); }
@@ -82,6 +90,40 @@ namespace LineGraph
             get { return _MaxDataPoints; }
             set { _MaxDataPoints = value; }
         }
+        
+        public double LowerLimit
+        {
+            get { return _LowerLimit; }
+            set
+            {
+                if (value >= _UpperLimit)
+                    _UpperLimit = value + 1d;
+                _LowerLimit = value; RedrawGraph();
+            }
+        }
+
+        public double UpperLimit
+        {
+            get { return _UpperLimit; }
+            set
+            {
+                if (value <= _LowerLimit)
+                    _LowerLimit = value - 1d;
+                _UpperLimit = value; RedrawGraph();
+            }
+        }
+
+        public bool AutoAdjustLimits
+        {
+            get { return _AutoAdjustLimits; }
+            set { _AutoAdjustLimits = value; RedrawGraph(); }
+        }
+
+        public bool ShowDemoVals
+        {
+            get { return _ShowDemoVals; }
+            set { _ShowDemoVals = value; Clear(true); }
+        }
 
         private IEnumerable<Point> Path
         {
@@ -89,13 +131,16 @@ namespace LineGraph
             {
                 var MaxVisible = Math.Min(Values.Count, (int)(this.Size.Width / ValueInterval) + 1);
                 var Left = this.Size.Width - (MaxVisible-1)*ValueInterval;
+                var UsedVals = Values.Skip(Math.Max(0, Values.Count - MaxVisible)).ToArray();
+                var ULimit = AutoAdjustLimits ? Math.Max(UsedVals.Max(), UpperLimit) : UpperLimit;
+                var LLimit = AutoAdjustLimits ? Math.Min(UsedVals.Min(), LowerLimit) : LowerLimit;
                 return
-                    Values
-                        .Skip(Math.Max(0, Values.Count - MaxVisible))
+                    UsedVals
                         .Select(
                         (val, idx) =>
                         {
                             var height = this.Size.Height - 1;
+                            val = (val - LLimit) / (ULimit - LLimit);
                             return new Point(Left + idx*ValueInterval, (int)(height - height*val));
                         });
             }
@@ -105,14 +150,17 @@ namespace LineGraph
         {
             Values = new List<double>();
             Clear(false);
-            Values.Add(0.1); Values.Add(0.2); Values.Add(0.3); Values.Add(0.4); Values.Add(0.5); Values.Add(0.6); Values.Add(0.7); Values.Add(0.8); Values.Add(0.9);
             InitializeComponent();
             RedrawBackground();
+            IsReadyToDraw = true;
             RedrawGraph();
         }
 
         public void RedrawGraph()
         {
+            if (!IsReadyToDraw)
+                return;
+
             // Trim list to max length
             if (Values.Count > MaxDataPoints)
             {
@@ -140,7 +188,15 @@ namespace LineGraph
             }
 
             this.pictureBox1.Image = StoredImage;
-            this.Refresh();
+            if (this.InvokeRequired)
+            {
+                if (this.IsHandleCreated)
+                    this.Invoke(new Action(() => this.Refresh()));
+            }
+            else
+            {
+                this.Refresh();
+            }
         }
 
         private void ResetBackgroundBrush()
@@ -179,15 +235,19 @@ namespace LineGraph
         {
             CurrentInterval = 0;
             Values.Clear();
-            Values.Add(0d);
-            Values.Add(0d);
-            if(Redraw) RedrawGraph();
+            Values.Add(LowerLimit);
+            Values.Add(LowerLimit);
+            if(ShowDemoVals)
+            {
+                Values.AddRange(Enumerable.Range(0, 10).Select(i => (i / 10d) * (UpperLimit - LowerLimit) + LowerLimit));
+            }
+            if (Redraw) RedrawGraph();
         }
 
         public void Add(params double[] NewVals)
         {
             CurrentInterval = (uint)(CurrentInterval + NewVals.Length);
-            Values.AddRange(NewVals.Select(v => Math.Min(Math.Max(v, 0d), 1d)));
+            Values.AddRange(NewVals.Select(v => v));
             RedrawGraph();
         }
 

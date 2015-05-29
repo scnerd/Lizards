@@ -21,12 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_48224E65FB168A1AFAF993AF2482A186"
-        "OwnerKey" = "8:_75F939967C184528A43B678979426A91"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
         "OwnerKey" = "8:_75F939967C184528A43B678979426A91"
         "MsmSig" = "8:_UNDEFINED"
@@ -73,12 +67,6 @@
         "OwnerKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
         "MsmSig" = "8:_UNDEFINED"
         }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_48224E65FB168A1AFAF993AF2482A186"
-        "MsmSig" = "8:_UNDEFINED"
-        }
     }
     "Configurations"
     {
@@ -88,7 +76,7 @@
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
         "OutputFilename" = "8:Debug\\Installer.msi"
-        "PackageFilesAs" = "3:2"
+        "PackageFilesAs" = "3:1"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
         "Compression" = "3:2"
@@ -101,15 +89,20 @@
             {
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
+            "PrerequisitesLocation" = "2:2"
             "Url" = "8:"
-            "ComponentsUrl" = "8:"
+            "ComponentsUrl" = "8:C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v8.1A\\Bootstrapper\\Packages"
                 "Items"
                 {
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client,KB2468871"
                     {
                     "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64) and Update for .NET Framework 4 (KB2468871)"
                     "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client,KB2468871"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.4.5"
+                    {
+                    "Name" = "8:Windows Installer 4.5"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.4.5"
                     }
                 }
             }
@@ -136,6 +129,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -166,37 +167,6 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_48224E65FB168A1AFAF993AF2482A186"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:LineGraph, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_48224E65FB168A1AFAF993AF2482A186"
-                    {
-                    "Name" = "8:LineGraph.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:LineGraph.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
             {
             "AssemblyRegister" = "3:1"
@@ -249,7 +219,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_5784C8BBD26942E48A6E0B1E0D3EEDE3"
             {
             "Name" = "8:#1916"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:DesktopFolder"
@@ -260,7 +230,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_68C263704DEE477B92899BF98CD0DBBE"
             {
             "Name" = "8:#1919"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:ProgramMenuFolder"
@@ -283,9 +253,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Lizards Installer"
+        "ProductName" = "8:Lizards"
         "ProductCode" = "8:{13287006-3655-4BD7-9701-2E7C321FAC46}"
-        "PackageCode" = "8:{9D13AF6E-D836-4C32-AEFE-2E3907EA87EB}"
+        "PackageCode" = "8:{3DB407CC-70A2-426C-BB1D-8BAD33CE319E}"
         "UpgradeCode" = "8:{946E43D2-C2EF-48D0-88C3-B14B26EAEC08}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -293,10 +263,10 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:0.1.0"
-        "Manufacturer" = "8:Cal Poly SLO"
+        "Manufacturer" = "8:Lizards"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:Lizards Installer"
+        "Title" = "8:Lizards"
         "Subject" = "8:"
         "ARPCONTACT" = "8:David Maxson"
         "Keywords" = "8:"
@@ -405,6 +375,34 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_07F6357A825F4CB79325FD60BAC7F6AC"
+            {
+            "Name" = "8:Lizards (Console)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_DE2CAF72538C41C9B6F17CD007F50F2C"
+            "Folder" = "8:_68C263704DEE477B92899BF98CD0DBBE"
+            "WorkingFolder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_51A6ED4A4129495C87C2855F8726AA83"
+            {
+            "Name" = "8:Lizards"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_75F939967C184528A43B678979426A91"
+            "Folder" = "8:_68C263704DEE477B92899BF98CD0DBBE"
+            "WorkingFolder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {

@@ -40,15 +40,15 @@
             this.btnReport = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.lblRampTemp = new System.Windows.Forms.Label();
-            this.lblHoldTemp = new System.Windows.Forms.Label();
-            this.lblMaxTemp = new System.Windows.Forms.Label();
+            this.btnMaxTemp = new System.Windows.Forms.Button();
+            this.btnRampTemp = new System.Windows.Forms.Button();
+            this.btnHoldTemp = new System.Windows.Forms.Button();
             this.numMaxTemp = new System.Windows.Forms.NumericUpDown();
             this.numRampTemp = new System.Windows.Forms.NumericUpDown();
             this.numHoldTemp = new System.Windows.Forms.NumericUpDown();
-            this.btnHoldTemp = new System.Windows.Forms.Button();
-            this.btnRampTemp = new System.Windows.Forms.Button();
-            this.btnMaxTemp = new System.Windows.Forms.Button();
+            this.lblMaxTemp = new System.Windows.Forms.Label();
+            this.lblRampTemp = new System.Windows.Forms.Label();
+            this.lblHoldTemp = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numNumLizards)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReport)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -65,7 +65,7 @@
             this.lblNumLizards.Location = new System.Drawing.Point(3, 38);
             this.lblNumLizards.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblNumLizards.Name = "lblNumLizards";
-            this.lblNumLizards.Size = new System.Drawing.Size(119, 13);
+            this.lblNumLizards.Size = new System.Drawing.Size(120, 13);
             this.lblNumLizards.TabIndex = 7;
             this.lblNumLizards.Text = "Number of Lizards:";
             this.lblNumLizards.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -73,7 +73,7 @@
             // numNumLizards
             // 
             this.numNumLizards.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numNumLizards.Location = new System.Drawing.Point(128, 34);
+            this.numNumLizards.Location = new System.Drawing.Point(129, 34);
             this.numNumLizards.Maximum = new decimal(new int[] {
             25,
             0,
@@ -85,7 +85,7 @@
             0,
             0});
             this.numNumLizards.Name = "numNumLizards";
-            this.numNumLizards.Size = new System.Drawing.Size(119, 20);
+            this.numNumLizards.Size = new System.Drawing.Size(120, 20);
             this.numNumLizards.TabIndex = 1;
             this.numNumLizards.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numNumLizards.Value = new decimal(new int[] {
@@ -109,9 +109,9 @@
             // 
             this.cmbComPorts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbComPorts.FormattingEnabled = true;
-            this.cmbComPorts.Location = new System.Drawing.Point(128, 3);
+            this.cmbComPorts.Location = new System.Drawing.Point(129, 3);
             this.cmbComPorts.Name = "cmbComPorts";
-            this.cmbComPorts.Size = new System.Drawing.Size(119, 21);
+            this.cmbComPorts.Size = new System.Drawing.Size(120, 21);
             this.cmbComPorts.TabIndex = 0;
             // 
             // lblComPorts
@@ -121,7 +121,7 @@
             this.lblComPorts.Location = new System.Drawing.Point(3, 7);
             this.lblComPorts.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblComPorts.Name = "lblComPorts";
-            this.lblComPorts.Size = new System.Drawing.Size(119, 13);
+            this.lblComPorts.Size = new System.Drawing.Size(120, 13);
             this.lblComPorts.TabIndex = 6;
             this.lblComPorts.Text = "Arduino Port:";
             this.lblComPorts.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -134,7 +134,7 @@
             0,
             0,
             0});
-            this.numReport.Location = new System.Drawing.Point(128, 65);
+            this.numReport.Location = new System.Drawing.Point(129, 65);
             this.numReport.Maximum = new decimal(new int[] {
             60,
             0,
@@ -146,7 +146,7 @@
             0,
             0});
             this.numReport.Name = "numReport";
-            this.numReport.Size = new System.Drawing.Size(119, 20);
+            this.numReport.Size = new System.Drawing.Size(120, 20);
             this.numReport.TabIndex = 2;
             this.numReport.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numReport.Value = new decimal(new int[] {
@@ -162,7 +162,7 @@
             this.lblReport.Location = new System.Drawing.Point(3, 69);
             this.lblReport.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblReport.Name = "lblReport";
-            this.lblReport.Size = new System.Drawing.Size(119, 13);
+            this.lblReport.Size = new System.Drawing.Size(120, 13);
             this.lblReport.TabIndex = 8;
             this.lblReport.Text = "Report Interval (s):";
             this.lblReport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -170,10 +170,10 @@
             // btnComPorts
             // 
             this.btnComPorts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnComPorts.Location = new System.Drawing.Point(260, 3);
+            this.btnComPorts.Location = new System.Drawing.Point(262, 3);
             this.btnComPorts.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnComPorts.Name = "btnComPorts";
-            this.btnComPorts.Size = new System.Drawing.Size(108, 23);
+            this.btnComPorts.Size = new System.Drawing.Size(106, 23);
             this.btnComPorts.TabIndex = 3;
             this.btnComPorts.Text = "Refresh";
             this.btnComPorts.UseVisualStyleBackColor = true;
@@ -182,10 +182,10 @@
             // btnNumLizards
             // 
             this.btnNumLizards.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnNumLizards.Location = new System.Drawing.Point(260, 34);
+            this.btnNumLizards.Location = new System.Drawing.Point(262, 34);
             this.btnNumLizards.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnNumLizards.Name = "btnNumLizards";
-            this.btnNumLizards.Size = new System.Drawing.Size(108, 23);
+            this.btnNumLizards.Size = new System.Drawing.Size(106, 23);
             this.btnNumLizards.TabIndex = 4;
             this.btnNumLizards.Text = "Reset";
             this.btnNumLizards.UseVisualStyleBackColor = true;
@@ -194,10 +194,10 @@
             // btnReport
             // 
             this.btnReport.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnReport.Location = new System.Drawing.Point(260, 65);
+            this.btnReport.Location = new System.Drawing.Point(262, 65);
             this.btnReport.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnReport.Name = "btnReport";
-            this.btnReport.Size = new System.Drawing.Size(108, 23);
+            this.btnReport.Size = new System.Drawing.Size(106, 23);
             this.btnReport.TabIndex = 5;
             this.btnReport.Text = "Reset";
             this.btnReport.UseVisualStyleBackColor = true;
@@ -258,41 +258,41 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(378, 189);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
-            // lblRampTemp
+            // btnMaxTemp
             // 
-            this.lblRampTemp.AutoSize = true;
-            this.lblRampTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblRampTemp.Location = new System.Drawing.Point(3, 131);
-            this.lblRampTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
-            this.lblRampTemp.Name = "lblRampTemp";
-            this.lblRampTemp.Size = new System.Drawing.Size(119, 13);
-            this.lblRampTemp.TabIndex = 9;
-            this.lblRampTemp.Text = "Ramp (C / min):";
-            this.lblRampTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnMaxTemp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnMaxTemp.Location = new System.Drawing.Point(262, 158);
+            this.btnMaxTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 8);
+            this.btnMaxTemp.Name = "btnMaxTemp";
+            this.btnMaxTemp.Size = new System.Drawing.Size(106, 23);
+            this.btnMaxTemp.TabIndex = 16;
+            this.btnMaxTemp.Text = "Reset";
+            this.btnMaxTemp.UseVisualStyleBackColor = true;
+            this.btnMaxTemp.Click += new System.EventHandler(this.btnMaxTemp_Click);
             // 
-            // lblHoldTemp
+            // btnRampTemp
             // 
-            this.lblHoldTemp.AutoSize = true;
-            this.lblHoldTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblHoldTemp.Location = new System.Drawing.Point(3, 100);
-            this.lblHoldTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
-            this.lblHoldTemp.Name = "lblHoldTemp";
-            this.lblHoldTemp.Size = new System.Drawing.Size(119, 13);
-            this.lblHoldTemp.TabIndex = 10;
-            this.lblHoldTemp.Text = "Hold / Start Temp (C):";
-            this.lblHoldTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnRampTemp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnRampTemp.Location = new System.Drawing.Point(262, 127);
+            this.btnRampTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
+            this.btnRampTemp.Name = "btnRampTemp";
+            this.btnRampTemp.Size = new System.Drawing.Size(106, 23);
+            this.btnRampTemp.TabIndex = 15;
+            this.btnRampTemp.Text = "Reset";
+            this.btnRampTemp.UseVisualStyleBackColor = true;
+            this.btnRampTemp.Click += new System.EventHandler(this.btnRampTemp_Click);
             // 
-            // lblMaxTemp
+            // btnHoldTemp
             // 
-            this.lblMaxTemp.AutoSize = true;
-            this.lblMaxTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblMaxTemp.Location = new System.Drawing.Point(3, 162);
-            this.lblMaxTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
-            this.lblMaxTemp.Name = "lblMaxTemp";
-            this.lblMaxTemp.Size = new System.Drawing.Size(119, 13);
-            this.lblMaxTemp.TabIndex = 11;
-            this.lblMaxTemp.Text = "Max Temp (C):";
-            this.lblMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnHoldTemp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnHoldTemp.Location = new System.Drawing.Point(262, 96);
+            this.btnHoldTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
+            this.btnHoldTemp.Name = "btnHoldTemp";
+            this.btnHoldTemp.Size = new System.Drawing.Size(106, 23);
+            this.btnHoldTemp.TabIndex = 14;
+            this.btnHoldTemp.Text = "Reset";
+            this.btnHoldTemp.UseVisualStyleBackColor = true;
+            this.btnHoldTemp.Click += new System.EventHandler(this.btnHoldTemp_Click);
             // 
             // numMaxTemp
             // 
@@ -303,9 +303,9 @@
             0,
             0,
             131072});
-            this.numMaxTemp.Location = new System.Drawing.Point(128, 158);
+            this.numMaxTemp.Location = new System.Drawing.Point(129, 158);
             this.numMaxTemp.Name = "numMaxTemp";
-            this.numMaxTemp.Size = new System.Drawing.Size(119, 20);
+            this.numMaxTemp.Size = new System.Drawing.Size(120, 20);
             this.numMaxTemp.TabIndex = 11;
             this.numMaxTemp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numMaxTemp.Value = new decimal(new int[] {
@@ -323,7 +323,7 @@
             0,
             0,
             131072});
-            this.numRampTemp.Location = new System.Drawing.Point(128, 127);
+            this.numRampTemp.Location = new System.Drawing.Point(129, 127);
             this.numRampTemp.Maximum = new decimal(new int[] {
             2,
             0,
@@ -335,7 +335,7 @@
             0,
             131072});
             this.numRampTemp.Name = "numRampTemp";
-            this.numRampTemp.Size = new System.Drawing.Size(119, 20);
+            this.numRampTemp.Size = new System.Drawing.Size(120, 20);
             this.numRampTemp.TabIndex = 12;
             this.numRampTemp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numRampTemp.Value = new decimal(new int[] {
@@ -353,9 +353,9 @@
             0,
             0,
             131072});
-            this.numHoldTemp.Location = new System.Drawing.Point(128, 96);
+            this.numHoldTemp.Location = new System.Drawing.Point(129, 96);
             this.numHoldTemp.Name = "numHoldTemp";
-            this.numHoldTemp.Size = new System.Drawing.Size(119, 20);
+            this.numHoldTemp.Size = new System.Drawing.Size(120, 20);
             this.numHoldTemp.TabIndex = 13;
             this.numHoldTemp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numHoldTemp.Value = new decimal(new int[] {
@@ -364,41 +364,41 @@
             0,
             0});
             // 
-            // btnHoldTemp
+            // lblMaxTemp
             // 
-            this.btnHoldTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnHoldTemp.Location = new System.Drawing.Point(260, 96);
-            this.btnHoldTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
-            this.btnHoldTemp.Name = "btnHoldTemp";
-            this.btnHoldTemp.Size = new System.Drawing.Size(108, 23);
-            this.btnHoldTemp.TabIndex = 14;
-            this.btnHoldTemp.Text = "Reset";
-            this.btnHoldTemp.UseVisualStyleBackColor = true;
-            this.btnHoldTemp.Click += new System.EventHandler(this.btnHoldTemp_Click);
+            this.lblMaxTemp.AutoSize = true;
+            this.lblMaxTemp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblMaxTemp.Location = new System.Drawing.Point(3, 162);
+            this.lblMaxTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblMaxTemp.Name = "lblMaxTemp";
+            this.lblMaxTemp.Size = new System.Drawing.Size(120, 13);
+            this.lblMaxTemp.TabIndex = 11;
+            this.lblMaxTemp.Text = "Max Temp (C):";
+            this.lblMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnRampTemp
+            // lblRampTemp
             // 
-            this.btnRampTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnRampTemp.Location = new System.Drawing.Point(260, 127);
-            this.btnRampTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
-            this.btnRampTemp.Name = "btnRampTemp";
-            this.btnRampTemp.Size = new System.Drawing.Size(108, 23);
-            this.btnRampTemp.TabIndex = 15;
-            this.btnRampTemp.Text = "Reset";
-            this.btnRampTemp.UseVisualStyleBackColor = true;
-            this.btnRampTemp.Click += new System.EventHandler(this.btnRampTemp_Click);
+            this.lblRampTemp.AutoSize = true;
+            this.lblRampTemp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblRampTemp.Location = new System.Drawing.Point(3, 131);
+            this.lblRampTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblRampTemp.Name = "lblRampTemp";
+            this.lblRampTemp.Size = new System.Drawing.Size(120, 13);
+            this.lblRampTemp.TabIndex = 9;
+            this.lblRampTemp.Text = "Ramp (C / min):";
+            this.lblRampTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnMaxTemp
+            // lblHoldTemp
             // 
-            this.btnMaxTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnMaxTemp.Location = new System.Drawing.Point(260, 158);
-            this.btnMaxTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 8);
-            this.btnMaxTemp.Name = "btnMaxTemp";
-            this.btnMaxTemp.Size = new System.Drawing.Size(108, 23);
-            this.btnMaxTemp.TabIndex = 16;
-            this.btnMaxTemp.Text = "Reset";
-            this.btnMaxTemp.UseVisualStyleBackColor = true;
-            this.btnMaxTemp.Click += new System.EventHandler(this.btnMaxTemp_Click);
+            this.lblHoldTemp.AutoSize = true;
+            this.lblHoldTemp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblHoldTemp.Location = new System.Drawing.Point(3, 100);
+            this.lblHoldTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblHoldTemp.Name = "lblHoldTemp";
+            this.lblHoldTemp.Size = new System.Drawing.Size(120, 13);
+            this.lblHoldTemp.TabIndex = 10;
+            this.lblHoldTemp.Text = "Hold / Start Temp (C):";
+            this.lblHoldTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // InitExperiment
             // 

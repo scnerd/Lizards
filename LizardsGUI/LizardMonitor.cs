@@ -26,6 +26,8 @@ namespace LizardsGUI
         public LizardMonitor()
         {
             InitializeComponent();
+            gphTempGraph.UpperLimit = MAX_TEMP;
+            gphTempGraph.LowerLimit = MIN_TEMP;
             gphTempGraph.Clear();
             OuterResized += OnOuterResized;
             InnerResized += OnInnerResized;
@@ -39,9 +41,6 @@ namespace LizardsGUI
                 _Lizard = value;
                 _Lizard.OnNewData += new NewLizardDataHandler(this.OnNewData);
                 lblLizardName.Text = string.Format("Lizard {0}", value.Number + 1);
-
-                // TODO: JUNK
-                _Lizard.demo_junk();
             }
         }
 
@@ -49,8 +48,8 @@ namespace LizardsGUI
         {
             if (_Lizard.IsActive)
             {
-                gphTempGraph.Add((NewTemp - MIN_TEMP)/(MAX_TEMP - MIN_TEMP));
-                lblCurrentTemp.Text = string.Format("Temp: {0:F2}°C", NewTemp);
+                gphTempGraph.Add(NewTemp);
+                this.Invoke(new Action(() => lblCurrentTemp.Text = string.Format("Temp: {0:F2}°C", NewTemp)));
             }
         }
 
@@ -58,7 +57,10 @@ namespace LizardsGUI
         {
             if (ToDisable != null) ToDisable.Enabled = false;
             if (ToEnable != null) ToEnable.Enabled = true;
-            _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, EVENTS[EventIndex]);
+            lock (_Lizard.AllNotesLock)
+            {
+                _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, EVENTS[EventIndex]);
+            }
             UpdateNotesTable();
         }
 
@@ -86,7 +88,10 @@ namespace LizardsGUI
 
         private void dataRecords_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            _Lizard.ImportantRecords.ElementAt(e.RowIndex).Note = dataRecords[e.ColumnIndex, e.RowIndex].Value.ToString();
+            lock (_Lizard.AllNotesLock)
+            {
+                _Lizard.ImportantRecords.ElementAt(e.RowIndex).Note = dataRecords[e.ColumnIndex, e.RowIndex].Value.ToString();
+            }
             UpdateNotesTable();
         }
 
@@ -115,10 +120,13 @@ namespace LizardsGUI
         private void UpdateNotesTable()
         {
             dataRecords.Rows.Clear();
-            foreach (LizardData.Record rec in _Lizard.ImportantRecords)
+            lock (_Lizard.AllNotesLock)
             {
-                if(rec != null)
-                    dataRecords.Rows.Add(rec.Timestamp, rec.AmbientTemp, rec.LizardTemp, rec.Note);
+                foreach (LizardData.Record rec in _Lizard.ImportantRecords)
+                {
+                    if (rec != null)
+                        dataRecords.Rows.Add(rec.Timestamp, rec.AmbientTemp, rec.LizardTemp, rec.Note);
+                }
             }
         }
     }

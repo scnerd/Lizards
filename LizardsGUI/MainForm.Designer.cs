@@ -29,9 +29,11 @@
         private void InitializeComponent()
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblAmbientTemp = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tblLizards = new System.Windows.Forms.TableLayoutPanel();
+            this.gphAmbientTemp = new LineGraph.LinePainter();
             this.txtDebugLog = new System.Windows.Forms.TextBox();
             this.btnHold = new System.Windows.Forms.Button();
             this.btnRamp = new System.Windows.Forms.Button();
@@ -40,8 +42,6 @@
             this.btnReserved1 = new System.Windows.Forms.Button();
             this.btnReserved2 = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
-            this.lblAmbientTemp = new System.Windows.Forms.ToolStripStatusLabel();
-            this.gphAmbientTemp = new LineGraph.LinePainter();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -62,6 +62,12 @@
             this.statusStrip1.Size = new System.Drawing.Size(776, 22);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblAmbientTemp
+            // 
+            this.lblAmbientTemp.Name = "lblAmbientTemp";
+            this.lblAmbientTemp.Size = new System.Drawing.Size(118, 17);
+            this.lblAmbientTemp.Text = "toolStripStatusLabel1";
             // 
             // splitContainer1
             // 
@@ -108,6 +114,8 @@
             // tblLizards
             // 
             this.tblLizards.AutoScroll = true;
+            this.tblLizards.AutoSize = true;
+            this.tblLizards.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tblLizards.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
             this.tblLizards.ColumnCount = 1;
             this.tblLizards.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -120,6 +128,26 @@
             this.tblLizards.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 338F));
             this.tblLizards.Size = new System.Drawing.Size(645, 340);
             this.tblLizards.TabIndex = 0;
+            // 
+            // gphAmbientTemp
+            // 
+            this.gphAmbientTemp.AutoAdjustLimits = false;
+            this.gphAmbientTemp.BackFillColor = System.Drawing.Color.Black;
+            this.gphAmbientTemp.BackLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.gphAmbientTemp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gphAmbientTemp.HorizontalBarInterval = 13;
+            this.gphAmbientTemp.LineColor = System.Drawing.Color.Red;
+            this.gphAmbientTemp.Location = new System.Drawing.Point(0, 0);
+            this.gphAmbientTemp.LowerLimit = 27D;
+            this.gphAmbientTemp.MaxDataPoints = 3000;
+            this.gphAmbientTemp.Name = "gphAmbientTemp";
+            this.gphAmbientTemp.ShowDemoVals = false;
+            this.gphAmbientTemp.Size = new System.Drawing.Size(645, 82);
+            this.gphAmbientTemp.TabIndex = 0;
+            this.gphAmbientTemp.Transparency = ((byte)(100));
+            this.gphAmbientTemp.UpperLimit = 50D;
+            this.gphAmbientTemp.ValueInterval = 1;
+            this.gphAmbientTemp.VerticalBarInterval = 13;
             // 
             // txtDebugLog
             // 
@@ -150,6 +178,7 @@
             this.btnRamp.TabIndex = 5;
             this.btnRamp.Text = "Start Ramping Temp";
             this.btnRamp.UseVisualStyleBackColor = true;
+            this.btnRamp.Click += new System.EventHandler(this.btnRamp_Click);
             // 
             // btnStop
             // 
@@ -160,6 +189,7 @@
             this.btnStop.TabIndex = 4;
             this.btnStop.Text = "End Experiment";
             this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // btnForceStop
             // 
@@ -169,8 +199,9 @@
             this.btnForceStop.Name = "btnForceStop";
             this.btnForceStop.Size = new System.Drawing.Size(127, 32);
             this.btnForceStop.TabIndex = 3;
-            this.btnForceStop.Text = "Force Stop";
+            this.btnForceStop.Text = "Emergency Reset";
             this.btnForceStop.UseVisualStyleBackColor = true;
+            this.btnForceStop.Click += new System.EventHandler(this.btnForceStop_Click);
             // 
             // btnReserved1
             // 
@@ -201,28 +232,7 @@
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save Results";
             this.btnSave.UseVisualStyleBackColor = true;
-            // 
-            // lblAmbientTemp
-            // 
-            this.lblAmbientTemp.Name = "lblAmbientTemp";
-            this.lblAmbientTemp.Size = new System.Drawing.Size(118, 17);
-            this.lblAmbientTemp.Text = "toolStripStatusLabel1";
-            // 
-            // gphAmbientTemp
-            // 
-            this.gphAmbientTemp.BackFillColor = System.Drawing.Color.Black;
-            this.gphAmbientTemp.BackLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.gphAmbientTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gphAmbientTemp.HorizontalBarInterval = 13;
-            this.gphAmbientTemp.LineColor = System.Drawing.Color.Red;
-            this.gphAmbientTemp.Location = new System.Drawing.Point(0, 0);
-            this.gphAmbientTemp.MaxDataPoints = 1000;
-            this.gphAmbientTemp.Name = "gphAmbientTemp";
-            this.gphAmbientTemp.Size = new System.Drawing.Size(645, 82);
-            this.gphAmbientTemp.TabIndex = 0;
-            this.gphAmbientTemp.Transparency = ((byte)(100));
-            this.gphAmbientTemp.ValueInterval = 1;
-            this.gphAmbientTemp.VerticalBarInterval = 13;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // MainForm
             // 
@@ -243,6 +253,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);

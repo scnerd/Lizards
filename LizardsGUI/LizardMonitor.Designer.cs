@@ -31,9 +31,12 @@ namespace LizardsGUI
         private void InitializeComponent()
         {
             this.sptOuter = new System.Windows.Forms.SplitContainer();
-            this.gphTempGraph = new LineGraph.LinePainter();
+            this.stpStatus = new System.Windows.Forms.StatusStrip();
+            this.lblLizardName = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblCurrentTemp = new System.Windows.Forms.ToolStripStatusLabel();
             this.sptInner = new System.Windows.Forms.SplitContainer();
             this.tblEventButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.btnNewNote = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnEvent2 = new System.Windows.Forms.Button();
             this.btnEvent1 = new System.Windows.Forms.Button();
@@ -42,21 +45,18 @@ namespace LizardsGUI
             this.AmbientTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LizardTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnNewNote = new System.Windows.Forms.Button();
-            this.stpStatus = new System.Windows.Forms.StatusStrip();
-            this.lblLizardName = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblCurrentTemp = new System.Windows.Forms.ToolStripStatusLabel();
+            this.gphTempGraph = new LineGraph.LinePainter();
             ((System.ComponentModel.ISupportInitialize)(this.sptOuter)).BeginInit();
             this.sptOuter.Panel1.SuspendLayout();
             this.sptOuter.Panel2.SuspendLayout();
             this.sptOuter.SuspendLayout();
+            this.stpStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sptInner)).BeginInit();
             this.sptInner.Panel1.SuspendLayout();
             this.sptInner.Panel2.SuspendLayout();
             this.sptInner.SuspendLayout();
             this.tblEventButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataRecords)).BeginInit();
-            this.stpStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // sptOuter
@@ -69,30 +69,40 @@ namespace LizardsGUI
             // sptOuter.Panel1
             // 
             this.sptOuter.Panel1.Controls.Add(this.gphTempGraph);
+            this.sptOuter.Panel1.Controls.Add(this.stpStatus);
             // 
             // sptOuter.Panel2
             // 
             this.sptOuter.Panel2.Controls.Add(this.sptInner);
-            this.sptOuter.Size = new System.Drawing.Size(809, 111);
+            this.sptOuter.Size = new System.Drawing.Size(809, 122);
             this.sptOuter.SplitterDistance = 220;
             this.sptOuter.TabIndex = 0;
             this.sptOuter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.sptOuter_SplitterMoved);
             // 
-            // gphTempGraph
+            // stpStatus
             // 
-            this.gphTempGraph.BackFillColor = System.Drawing.Color.Black;
-            this.gphTempGraph.BackLineColor = System.Drawing.Color.DarkGreen;
-            this.gphTempGraph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gphTempGraph.HorizontalBarInterval = 13;
-            this.gphTempGraph.LineColor = System.Drawing.Color.LimeGreen;
-            this.gphTempGraph.Location = new System.Drawing.Point(0, 0);
-            this.gphTempGraph.MaxDataPoints = 1000;
-            this.gphTempGraph.Name = "gphTempGraph";
-            this.gphTempGraph.Size = new System.Drawing.Size(220, 111);
-            this.gphTempGraph.TabIndex = 0;
-            this.gphTempGraph.Transparency = ((byte)(100));
-            this.gphTempGraph.ValueInterval = 2;
-            this.gphTempGraph.VerticalBarInterval = 13;
+            this.stpStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblLizardName,
+            this.lblCurrentTemp});
+            this.stpStatus.Location = new System.Drawing.Point(0, 100);
+            this.stpStatus.Name = "stpStatus";
+            this.stpStatus.Size = new System.Drawing.Size(220, 22);
+            this.stpStatus.TabIndex = 1;
+            this.stpStatus.Text = "statusStrip1";
+            // 
+            // lblLizardName
+            // 
+            this.lblLizardName.Name = "lblLizardName";
+            this.lblLizardName.Size = new System.Drawing.Size(118, 17);
+            this.lblLizardName.Text = "toolStripStatusLabel1";
+            this.lblLizardName.ToolTipText = "The name of this lizard";
+            // 
+            // lblCurrentTemp
+            // 
+            this.lblCurrentTemp.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.lblCurrentTemp.Name = "lblCurrentTemp";
+            this.lblCurrentTemp.Size = new System.Drawing.Size(4, 17);
+            this.lblCurrentTemp.ToolTipText = "The lizard\'s current temperature";
             // 
             // sptInner
             // 
@@ -108,9 +118,8 @@ namespace LizardsGUI
             // sptInner.Panel2
             // 
             this.sptInner.Panel2.Controls.Add(this.dataRecords);
-            this.sptInner.Panel2.Controls.Add(this.btnNewNote);
-            this.sptInner.Size = new System.Drawing.Size(585, 111);
-            this.sptInner.SplitterDistance = 118;
+            this.sptInner.Size = new System.Drawing.Size(585, 122);
+            this.sptInner.SplitterDistance = 152;
             this.sptInner.TabIndex = 0;
             this.sptInner.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.sptInner_SplitterMoved);
             // 
@@ -118,27 +127,40 @@ namespace LizardsGUI
             // 
             this.tblEventButtons.ColumnCount = 1;
             this.tblEventButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblEventButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblEventButtons.Controls.Add(this.btnNewNote, 0, 3);
             this.tblEventButtons.Controls.Add(this.btnStop, 0, 2);
             this.tblEventButtons.Controls.Add(this.btnEvent2, 0, 1);
             this.tblEventButtons.Controls.Add(this.btnEvent1, 0, 0);
             this.tblEventButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblEventButtons.Location = new System.Drawing.Point(0, 0);
             this.tblEventButtons.Name = "tblEventButtons";
-            this.tblEventButtons.RowCount = 3;
-            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tblEventButtons.Size = new System.Drawing.Size(118, 111);
+            this.tblEventButtons.RowCount = 4;
+            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.00062F));
+            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.00062F));
+            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.00062F));
+            this.tblEventButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 24.99813F));
+            this.tblEventButtons.Size = new System.Drawing.Size(152, 122);
             this.tblEventButtons.TabIndex = 0;
+            // 
+            // btnNewNote
+            // 
+            this.btnNewNote.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnNewNote.Location = new System.Drawing.Point(3, 93);
+            this.btnNewNote.MaximumSize = new System.Drawing.Size(0, 32);
+            this.btnNewNote.Name = "btnNewNote";
+            this.btnNewNote.Size = new System.Drawing.Size(146, 26);
+            this.btnNewNote.TabIndex = 0;
+            this.btnNewNote.Text = "Make New Note";
+            this.btnNewNote.UseVisualStyleBackColor = true;
+            this.btnNewNote.Click += new System.EventHandler(this.btnNewNote_Click);
             // 
             // btnStop
             // 
             this.btnStop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(3, 77);
+            this.btnStop.Location = new System.Drawing.Point(3, 63);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(112, 31);
+            this.btnStop.Size = new System.Drawing.Size(146, 24);
             this.btnStop.TabIndex = 2;
             this.btnStop.Text = "Event 3 (Stop)";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -148,9 +170,9 @@ namespace LizardsGUI
             // 
             this.btnEvent2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnEvent2.Enabled = false;
-            this.btnEvent2.Location = new System.Drawing.Point(3, 40);
+            this.btnEvent2.Location = new System.Drawing.Point(3, 33);
             this.btnEvent2.Name = "btnEvent2";
-            this.btnEvent2.Size = new System.Drawing.Size(112, 31);
+            this.btnEvent2.Size = new System.Drawing.Size(146, 24);
             this.btnEvent2.TabIndex = 1;
             this.btnEvent2.Text = "Event 2";
             this.btnEvent2.UseVisualStyleBackColor = true;
@@ -161,7 +183,7 @@ namespace LizardsGUI
             this.btnEvent1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnEvent1.Location = new System.Drawing.Point(3, 3);
             this.btnEvent1.Name = "btnEvent1";
-            this.btnEvent1.Size = new System.Drawing.Size(112, 31);
+            this.btnEvent1.Size = new System.Drawing.Size(146, 24);
             this.btnEvent1.TabIndex = 0;
             this.btnEvent1.Text = "Event 1";
             this.btnEvent1.UseVisualStyleBackColor = true;
@@ -169,6 +191,10 @@ namespace LizardsGUI
             // 
             // dataRecords
             // 
+            this.dataRecords.AllowUserToAddRows = false;
+            this.dataRecords.AllowUserToDeleteRows = false;
+            this.dataRecords.AllowUserToOrderColumns = true;
+            this.dataRecords.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             this.dataRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataRecords.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Timestamp,
@@ -178,7 +204,7 @@ namespace LizardsGUI
             this.dataRecords.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataRecords.Location = new System.Drawing.Point(0, 0);
             this.dataRecords.Name = "dataRecords";
-            this.dataRecords.Size = new System.Drawing.Size(463, 75);
+            this.dataRecords.Size = new System.Drawing.Size(429, 122);
             this.dataRecords.TabIndex = 1;
             this.dataRecords.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataRecords_CellEndEdit);
             // 
@@ -205,41 +231,25 @@ namespace LizardsGUI
             this.Note.HeaderText = "Note";
             this.Note.Name = "Note";
             // 
-            // btnNewNote
+            // gphTempGraph
             // 
-            this.btnNewNote.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnNewNote.Location = new System.Drawing.Point(0, 75);
-            this.btnNewNote.Name = "btnNewNote";
-            this.btnNewNote.Size = new System.Drawing.Size(463, 36);
-            this.btnNewNote.TabIndex = 0;
-            this.btnNewNote.Text = "Make New Note";
-            this.btnNewNote.UseVisualStyleBackColor = true;
-            this.btnNewNote.Click += new System.EventHandler(this.btnNewNote_Click);
-            // 
-            // stpStatus
-            // 
-            this.stpStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblLizardName,
-            this.lblCurrentTemp});
-            this.stpStatus.Location = new System.Drawing.Point(0, 111);
-            this.stpStatus.Name = "stpStatus";
-            this.stpStatus.Size = new System.Drawing.Size(809, 22);
-            this.stpStatus.TabIndex = 1;
-            this.stpStatus.Text = "statusStrip1";
-            // 
-            // lblLizardName
-            // 
-            this.lblLizardName.Name = "lblLizardName";
-            this.lblLizardName.Size = new System.Drawing.Size(118, 17);
-            this.lblLizardName.Text = "toolStripStatusLabel1";
-            this.lblLizardName.ToolTipText = "The name of this lizard";
-            // 
-            // lblCurrentTemp
-            // 
-            this.lblCurrentTemp.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.lblCurrentTemp.Name = "lblCurrentTemp";
-            this.lblCurrentTemp.Size = new System.Drawing.Size(4, 17);
-            this.lblCurrentTemp.ToolTipText = "The lizard\'s current temperature";
+            this.gphTempGraph.AutoAdjustLimits = false;
+            this.gphTempGraph.BackFillColor = System.Drawing.Color.Black;
+            this.gphTempGraph.BackLineColor = System.Drawing.Color.DarkGreen;
+            this.gphTempGraph.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gphTempGraph.HorizontalBarInterval = 13;
+            this.gphTempGraph.LineColor = System.Drawing.Color.LimeGreen;
+            this.gphTempGraph.Location = new System.Drawing.Point(0, 0);
+            this.gphTempGraph.LowerLimit = 0D;
+            this.gphTempGraph.MaxDataPoints = 1000;
+            this.gphTempGraph.Name = "gphTempGraph";
+            this.gphTempGraph.ShowDemoVals = false;
+            this.gphTempGraph.Size = new System.Drawing.Size(220, 100);
+            this.gphTempGraph.TabIndex = 0;
+            this.gphTempGraph.Transparency = ((byte)(100));
+            this.gphTempGraph.UpperLimit = 1D;
+            this.gphTempGraph.ValueInterval = 1;
+            this.gphTempGraph.VerticalBarInterval = 13;
             // 
             // LizardMonitor
             // 
@@ -247,23 +257,22 @@ namespace LizardsGUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.sptOuter);
-            this.Controls.Add(this.stpStatus);
             this.Name = "LizardMonitor";
-            this.Size = new System.Drawing.Size(809, 133);
+            this.Size = new System.Drawing.Size(809, 122);
             this.sptOuter.Panel1.ResumeLayout(false);
+            this.sptOuter.Panel1.PerformLayout();
             this.sptOuter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sptOuter)).EndInit();
             this.sptOuter.ResumeLayout(false);
+            this.stpStatus.ResumeLayout(false);
+            this.stpStatus.PerformLayout();
             this.sptInner.Panel1.ResumeLayout(false);
             this.sptInner.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sptInner)).EndInit();
             this.sptInner.ResumeLayout(false);
             this.tblEventButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataRecords)).EndInit();
-            this.stpStatus.ResumeLayout(false);
-            this.stpStatus.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
