@@ -19,7 +19,6 @@ namespace LizardsGUI
 
         public const double MIN_TEMP = 20d;
         public const double MAX_TEMP = 55d;
-        public readonly string[] EVENTS = {"Event 1", "Event 2", "Event 3"};
 
         private LizardData _Lizard;
 
@@ -31,6 +30,9 @@ namespace LizardsGUI
             gphTempGraph.Clear();
             OuterResized += OnOuterResized;
             InnerResized += OnInnerResized;
+            btnEvent1.Text = LizardData.EVENTS[0];
+            btnEvent2.Text = LizardData.EVENTS[1];
+            btnStop.Text = LizardData.EVENTS[2];
         }
 
         public LizardData Lizard
@@ -59,7 +61,7 @@ namespace LizardsGUI
             if (ToEnable != null) ToEnable.Enabled = true;
             lock (_Lizard.AllNotesLock)
             {
-                _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, EVENTS[EventIndex]);
+                _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, LizardData.EVENTS[EventIndex]);
             }
             UpdateNotesTable();
         }
@@ -84,6 +86,8 @@ namespace LizardsGUI
         {
             _Lizard.Notes.Add(new LizardData.Record(_Lizard));
             UpdateNotesTable();
+            dataRecords.CurrentCell = dataRecords["Note", dataRecords.Rows.Count - 1];
+            dataRecords.Select();
         }
 
         private void dataRecords_CellEndEdit(object sender, DataGridViewCellEventArgs e)

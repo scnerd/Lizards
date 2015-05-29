@@ -194,6 +194,7 @@ namespace LizardsGUI
             this.dataRecords.AllowUserToAddRows = false;
             this.dataRecords.AllowUserToDeleteRows = false;
             this.dataRecords.AllowUserToOrderColumns = true;
+            this.dataRecords.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dataRecords.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             this.dataRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataRecords.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -213,23 +214,27 @@ namespace LizardsGUI
             this.Timestamp.HeaderText = "Timestamp";
             this.Timestamp.Name = "Timestamp";
             this.Timestamp.ReadOnly = true;
+            this.Timestamp.Width = 83;
             // 
             // AmbientTemp
             // 
             this.AmbientTemp.HeaderText = "Ambient";
             this.AmbientTemp.Name = "AmbientTemp";
             this.AmbientTemp.ReadOnly = true;
+            this.AmbientTemp.Width = 70;
             // 
             // LizardTemp
             // 
             this.LizardTemp.HeaderText = "Lizard";
             this.LizardTemp.Name = "LizardTemp";
             this.LizardTemp.ReadOnly = true;
+            this.LizardTemp.Width = 60;
             // 
             // Note
             // 
             this.Note.HeaderText = "Note";
             this.Note.Name = "Note";
+            this.Note.Width = 55;
             // 
             // gphTempGraph
             // 

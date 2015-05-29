@@ -39,8 +39,6 @@
             this.btnRamp = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnForceStop = new System.Windows.Forms.Button();
-            this.btnReserved1 = new System.Windows.Forms.Button();
-            this.btnReserved2 = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -86,8 +84,6 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnRamp);
             this.splitContainer1.Panel2.Controls.Add(this.btnStop);
             this.splitContainer1.Panel2.Controls.Add(this.btnForceStop);
-            this.splitContainer1.Panel2.Controls.Add(this.btnReserved1);
-            this.splitContainer1.Panel2.Controls.Add(this.btnReserved2);
             this.splitContainer1.Panel2.Controls.Add(this.btnSave);
             this.splitContainer1.Size = new System.Drawing.Size(776, 426);
             this.splitContainer1.SplitterDistance = 645;
@@ -152,16 +148,17 @@
             // txtDebugLog
             // 
             this.txtDebugLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDebugLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDebugLog.Location = new System.Drawing.Point(0, 0);
             this.txtDebugLog.Multiline = true;
             this.txtDebugLog.Name = "txtDebugLog";
-            this.txtDebugLog.Size = new System.Drawing.Size(127, 202);
+            this.txtDebugLog.Size = new System.Drawing.Size(127, 266);
             this.txtDebugLog.TabIndex = 7;
             // 
             // btnHold
             // 
             this.btnHold.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnHold.Location = new System.Drawing.Point(0, 202);
+            this.btnHold.Location = new System.Drawing.Point(0, 266);
             this.btnHold.Name = "btnHold";
             this.btnHold.Size = new System.Drawing.Size(127, 32);
             this.btnHold.TabIndex = 6;
@@ -172,7 +169,7 @@
             // btnRamp
             // 
             this.btnRamp.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnRamp.Location = new System.Drawing.Point(0, 234);
+            this.btnRamp.Location = new System.Drawing.Point(0, 298);
             this.btnRamp.Name = "btnRamp";
             this.btnRamp.Size = new System.Drawing.Size(127, 32);
             this.btnRamp.TabIndex = 5;
@@ -183,7 +180,7 @@
             // btnStop
             // 
             this.btnStop.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnStop.Location = new System.Drawing.Point(0, 266);
+            this.btnStop.Location = new System.Drawing.Point(0, 330);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(127, 32);
             this.btnStop.TabIndex = 4;
@@ -195,33 +192,13 @@
             // 
             this.btnForceStop.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnForceStop.ForeColor = System.Drawing.Color.Maroon;
-            this.btnForceStop.Location = new System.Drawing.Point(0, 298);
+            this.btnForceStop.Location = new System.Drawing.Point(0, 362);
             this.btnForceStop.Name = "btnForceStop";
             this.btnForceStop.Size = new System.Drawing.Size(127, 32);
             this.btnForceStop.TabIndex = 3;
             this.btnForceStop.Text = "Emergency Reset";
             this.btnForceStop.UseVisualStyleBackColor = true;
             this.btnForceStop.Click += new System.EventHandler(this.btnForceStop_Click);
-            // 
-            // btnReserved1
-            // 
-            this.btnReserved1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnReserved1.Location = new System.Drawing.Point(0, 330);
-            this.btnReserved1.Name = "btnReserved1";
-            this.btnReserved1.Size = new System.Drawing.Size(127, 32);
-            this.btnReserved1.TabIndex = 2;
-            this.btnReserved1.Text = "???";
-            this.btnReserved1.UseVisualStyleBackColor = true;
-            // 
-            // btnReserved2
-            // 
-            this.btnReserved2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnReserved2.Location = new System.Drawing.Point(0, 362);
-            this.btnReserved2.Name = "btnReserved2";
-            this.btnReserved2.Size = new System.Drawing.Size(127, 32);
-            this.btnReserved2.TabIndex = 1;
-            this.btnReserved2.Text = "???";
-            this.btnReserved2.UseVisualStyleBackColor = true;
             // 
             // btnSave
             // 
@@ -275,8 +252,6 @@
         private System.Windows.Forms.Button btnRamp;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Button btnForceStop;
-        private System.Windows.Forms.Button btnReserved1;
-        private System.Windows.Forms.Button btnReserved2;
         private System.Windows.Forms.ToolStripStatusLabel lblAmbientTemp;
     }
 }
