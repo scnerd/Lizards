@@ -143,7 +143,7 @@ namespace TextMenu
                 }
                 else
                     input = (char) InStream.Read();
-                input = CaseSensitive ? char.ToLower(input) : input;
+                input = CaseSensitive ? input : char.ToLower(input);
 
                 found = mItems.Find(m => (CaseSensitive ? m.Selector : char.ToLower(m.Selector)) == input);
                 if (found == null)

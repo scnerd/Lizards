@@ -89,7 +89,8 @@ namespace LizardsGUI
 
         private void btnForceStop_Click(object sender, EventArgs e)
         {
-            ArduinoCommunicator.ForceStop();
+            if(MessageBox.Show("This will reset the Arduino and disable the heater, are you sure?", "Confirm reset", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+                ArduinoCommunicator.ForceStop();
         }
 
         private void btnSave_Click(object sender, EventArgs e)

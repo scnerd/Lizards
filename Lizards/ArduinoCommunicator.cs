@@ -17,6 +17,9 @@ namespace Lizards
     using System.Timers;
     public delegate void NewAmbientTempHandler(double newTemp);
 
+    /// <summary>
+    /// FakeSerialPort takes the place of the actual SerialPort library, supporting all needed methods and reporting fake temperatures using the protocol defined for this experiment
+    /// </summary>
     public class FakeSerialPort
     {
         BlockingCollection<byte> ReadyToRead = new BlockingCollection<byte>();
@@ -82,6 +85,12 @@ namespace Lizards
         private double MAX = 50, MIN = 27;
         private void timer1_Tick(object sender, EventArgs e)
         {
+            /*
+             * In short, for each temperature (a value between 0 and 1), randomly move it around and
+             * report that temperature back through the serial port buffer (as a ushort scaled correctly
+             * as defined by the current thermometer settings)
+             */
+
             for (int i = 0; i < ds.Length; i++)
             {
                 bool Up = rnd.NextDouble() > ds[i];
@@ -108,12 +117,19 @@ namespace Lizards
         }
     }
 
+    /// <summary>
+    /// Supports all communication and protocols needed to talk to an Arduino programmed with the Lizard Experiment code.
+    /// This reads temperatures from the Arduino and writes signals to it, updating Lizard data objects and the ambient
+    /// temperature when new data is received. Note that this class is also responsible for creating and maintaining the
+    /// Lizard data objects. This class is a static singleton, that is, only the static version of this class exists, and
+    /// all other code refers to this single static instance.
+    /// </summary>
     public static class ArduinoCommunicator
     {
-        
-
+        // Defines an event that gets triggered when a new ambient temperature reading is received
         public static event NewAmbientTempHandler OnNewAmbientTemp;
 
+        // Defines the binary values for each signal that can be sent to the Arduino
         private enum ArduinoSignal
         {
             Hold = (ushort)0x0001,
@@ -121,26 +137,42 @@ namespace Lizards
             Stop = (ushort)0x0003
         }
 
+        // The SerialPort connection settings, must be synchronized with how the Arduino sets up its serial communication
         public const int BAUD_RATE = 9600;
         public const Parity PARITY = Parity.Even;
         public static readonly StopBits STOP_BITS = StopBits.One;
         public const int BITS_PER_DATA = 8;
 
+        // Default value for how many seconds should elapse before saving another temperature reading for each lizard
         public const int DEFAULT_SAVE_INTERVAL = 15;
+
+        // Defines the thermometer settings for the manifold (ambient) and lizard thermometers
+        //      Scale: 1 / How many integer values elapse between a single degree celsius (e.g., a 1/16 deg C resolution thermometer would use 1/16 as the scale)
+        //      Base: The temperature in deg C when the thermometer reports the 0 value
         public const double AMBIENT_SCALE = 1/16d, AMBIENT_BASE = 0d;
         public const double LIZARD_SCALE = 1/16d, LIZARD_BASE = 0d;
 
+        // The serial port that the Arduino is plugged into
         private static SerialPort Port;
+
+        // Some experiment state variables
         private static bool KeepRunning;
         private static bool ExperimentRunning = false;
         private static bool ExperimentStarted = false;
         private static bool AlreadyWrote = false;
+
+        // The master list of lizards
         public static LizardData[] Lizards { get; private set; }
 
+        // The timestamp for when the experiment is started (when the temperature ramp begins)
         public static DateTime StartTime { get; private set; }
 
+        // A string that records data that's sent from the Arduino in hex format, for debugging
         private static StringBuilder DataReadLog = new StringBuilder();
 
+        /// <summary>
+        /// Sets up the event handler for when the program is shut down, forcefully or gently
+        /// </summary>
         static ArduinoCommunicator()
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler((sender, args) =>
@@ -163,14 +195,21 @@ namespace Lizards
                 {
                 }
             });
-            //StartTime = DateTime.Now; // This should get overwritten by the start of the experiment, but just in case
         }
 
+        /// <summary>
+        /// Retrieves all possible serial ports that the Arduino could be plugged into
+        /// </summary>
+        /// <returns>A list of serial port names</returns>
         public static string[] GetPossiblePorts()
         {
             return SerialPort.GetPortNames();
         }
 
+        /// <summary>
+        /// Connects to the Arduino, resetting it and spinning off a listener thread to retrieve data from it
+        /// </summary>
+        /// <param name="ToConnect">The name of the serial port to connect to</param>
         public static void Connect(string ToConnect)
         {
             ReportDebug("Connecting to Arduino");
@@ -183,19 +222,23 @@ namespace Lizards
             // Open the port (throws System.UnauthorizedAccessException if the port is already open elsewhere)
             Port.Open();
 
-
+            // Spin up listener thread
             KeepRunning = true;
             Task ListenToArduino = new Task(() =>
             {
                 ReportDebug("Beginning to listen for data from Arduino");
                 while (KeepRunning)
                 {
+                    // Get the temperature readings from the serial signal
                     double[] temps = ReadTemps();
-                    OnNewAmbientTemp(temps[0]);
+                    // Deal with the ambient temperature first (always the first value)
+                    if(OnNewAmbientTemp != null)
+                        OnNewAmbientTemp(temps[0]);
                     LizardData.CurrentAmbientTemp = temps[0];
                     temps = temps.Skip(1).ToArray(); // Drop the first value, since we've used it already
                     lock (Lizards)
                     {
+                        // Handle all the lizard temps
                         foreach (
                             var liz_temp in Lizards.Zip(temps, (liz, temp) => new Tuple<LizardData, double>(liz, temp)))
                             liz_temp.Item1.Update(liz_temp.Item2);
@@ -205,6 +248,11 @@ namespace Lizards
             ListenToArduino.Start();
         }
 
+        /// <summary>
+        /// Creates the lizard objects, initializing the Lizards array
+        /// </summary>
+        /// <param name="NumLizards">The number of lizards to create</param>
+        /// <returns>The Lizards array, if desired</returns>
         public static LizardData[] InitializeLizards(int NumLizards)
         {
             Lizards = new LizardData[NumLizards];
@@ -214,22 +262,40 @@ namespace Lizards
             return Lizards;
         }
 
+        /// <summary>
+        /// Adds a text writer to receive debug output
+        /// </summary>
+        /// <param name="Writer">The writer to be called when debug output is available</param>
         public static void AddDebugOutput(TextWriter Writer)
         {
             Debug.Listeners.Add(new TextWriterTraceListener(Writer));
         }
 
+        /// <summary>
+        /// Makes a report through the debug writers
+        /// </summary>
+        /// <param name="format">A string that optionally contains format parameters</param>
+        /// <param name="args">Formatting parameters</param>
         internal static void ReportDebug(string format, params object[] args)
         {
             Debug.WriteLine("{0} - {1}", StartTime != default(DateTime) ? (DateTime.Now - StartTime).ToString(@"%h\:mm\:ss") : DateTime.Now.ToString("H:mm:ss"), string.Format(format, args));
         }
 
+        /// <summary>
+        /// Tells the Arduino to try to hold steady at the start temperature
+        /// </summary>
+        /// <param name="Temp">The temperature to hold (in degrees C)</param>
         public static void StartHoldingTemp(double Temp)
         {
             ReportDebug("Beginning to hold {0:F2}°C", Temp);
             SendHoldSignal(ConvertFromAmbientTemp(Temp));
         }
 
+        /// <summary>
+        /// Tells the Arduino to start ramping up its temperature at a steady ramp rate
+        /// </summary>
+        /// <param name="Ramp">The ramp rate (in degrees C per minute)</param>
+        /// <param name="Target">The max temperature to reach (in degrees C)</param>
         public static void StartRampingTemp(double Ramp, double Target)
         {
             ReportDebug("Marking start time");
@@ -240,6 +306,11 @@ namespace Lizards
             //Port.NewLine = END_OF_DATA_BLOCK;
         }
 
+        /// <summary>
+        /// Reads the specified number of bytes from the Arduino
+        /// </summary>
+        /// <param name="Count">The number of bytes to read</param>
+        /// <returns>An array of the bytes read, which may be shorter than requested if the port is closed</returns>
         private static byte[] ReadBytes(int Count)
         {
             return Enumerable.Range(0, Count)
@@ -249,6 +320,10 @@ namespace Lizards
                 .ToArray();
         }
 
+        /// <summary>
+        /// Reads an unsigned short from the Arduino, since this is the size of data that we primarily work with
+        /// </summary>
+        /// <returns>The ushort that was read</returns>
         private static ushort ReadChunk()
         {
             ushort val = BitConverter.ToUInt16(ReadBytes(2), 0);
@@ -256,6 +331,10 @@ namespace Lizards
             return val;
         }
 
+        /// <summary>
+        /// Reads an entire packet from the Arduino, however long it may be
+        /// </summary>
+        /// <returns>The packet contents</returns>
         private static ushort[] ReadMessage()
         {
             List<ushort> Messages = new List<ushort>();
@@ -278,6 +357,10 @@ namespace Lizards
             return Messages.ToArray();
         }
 
+        /// <summary>
+        /// Reads a list of temperatures from the Arduino
+        /// </summary>
+        /// <returns>The list of temperatures, where the first element is the ambient temp and the remaining elements belong to the lizards in order</returns>
         private static double[] ReadTemps()
         {
             ushort[] Temps = ReadMessage();
@@ -296,6 +379,9 @@ namespace Lizards
             return lizard_temps.ToArray();
         }
 
+        /// <summary>
+        /// Ends the experiment and commands the Arduino to stop heating
+        /// </summary>
         public static void StopExperiment()
         {
             ReportDebug("Stopping experiment");
@@ -304,6 +390,9 @@ namespace Lizards
             SendStopSignal();
         }
 
+        /// <summary>
+        /// Resets the connection to the Arduino, causing it to reset and enter its initial state again
+        /// </summary>
         public static void ForceStop()
         {
             ReportDebug("Resetting Arduino to terminate heating");
@@ -312,22 +401,39 @@ namespace Lizards
             Port.Open();
         }
 
+        /// <summary>
+        /// Sends the specified ushort to the Arduino
+        /// </summary>
+        /// <param name="Chunk">The value to send</param>
         private static void Send(ushort Chunk)
         {
             Port.Write(BitConverter.GetBytes(Chunk), 0, 2);
         }
 
+        /// <summary>
+        /// Sends the specified signal to the Arduino
+        /// </summary>
+        /// <param name="Sig">The signal to send</param>
         private static void Send(ArduinoSignal Sig)
         {
             Send((ushort) Sig);
         }
 
+        /// <summary>
+        /// Sends the "Hold" signal to the Arduino
+        /// </summary>
+        /// <param name="Target">The temperature to hold</param>
         private static void SendHoldSignal(ushort Target)
         {
             Send(ArduinoSignal.Hold);
             Send(Target);
         }
 
+        /// <summary>
+        /// Sends the "Ramp" signal to the Arduino
+        /// </summary>
+        /// <param name="Ramp">The temperature rate to ramp at</param>
+        /// <param name="Target">The max temperature to reach</param>
         private static void SendStartSignal(ushort Ramp, ushort Target)
         {
             Send(ArduinoSignal.Start);
@@ -335,16 +441,29 @@ namespace Lizards
             Send(Target);
         }
 
+        /// <summary>
+        /// Sends the "Stop" signal to the Arduino
+        /// </summary>
         private static void SendStopSignal()
         {
             Send(ArduinoSignal.Stop);
         }
 
+        /// <summary>
+        /// Converts the given ambient temperature, as reported by the manifold thermometer, into degrees C
+        /// </summary>
+        /// <param name="Value">The reading from the the manifold thermometer</param>
+        /// <returns>The equivalent degrees C</returns>
         internal static double ConvertAmbientTemp(int Value)
         {
             return Value * AMBIENT_SCALE + AMBIENT_BASE;
         }
 
+        /// <summary>
+        /// Converts the given ambient temperature, as degrees C, into the equivalent reading from the manifold thermometer
+        /// </summary>
+        /// <param name="Value">The temperature in degrees C</param>
+        /// <returns>The equivalent reading from the thermometer</returns>
         internal static ushort ConvertFromAmbientTemp(double Value)
         {
             return (ushort) Math.Round((Value - AMBIENT_BASE)/AMBIENT_SCALE);

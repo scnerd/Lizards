@@ -21,13 +21,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+        "MsmKey" = "8:_062B427992CB71070DCFD8E8C5FEFE16"
         "OwnerKey" = "8:_75F939967C184528A43B678979426A91"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+        "MsmKey" = "8:_062B427992CB71070DCFD8E8C5FEFE16"
         "OwnerKey" = "8:_DE2CAF72538C41C9B6F17CD007F50F2C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -52,6 +52,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_062B427992CB71070DCFD8E8C5FEFE16"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DE2CAF72538C41C9B6F17CD007F50F2C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -59,12 +65,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_75F939967C184528A43B678979426A91"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -116,7 +116,7 @@
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
-        "Compression" = "3:2"
+        "Compression" = "3:3"
         "SignOutput" = "11:FALSE"
         "CertificateFile" = "8:"
         "PrivateKeyFile" = "8:"
@@ -126,15 +126,20 @@
             {
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
-            "PrerequisitesLocation" = "2:1"
+            "PrerequisitesLocation" = "2:2"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client,KB2468871"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64) and Update for .NET Framework 4 (KB2468871)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client,KB2468871"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.4.5"
+                    {
+                    "Name" = "8:Windows Installer 4.5"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.4.5"
                     }
                 }
             }
@@ -167,14 +172,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_062B427992CB71070DCFD8E8C5FEFE16"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Lizards, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+                    "_062B427992CB71070DCFD8E8C5FEFE16"
                     {
                     "Name" = "8:Lizards.dll"
                     "Attributes" = "3:512"
@@ -255,7 +260,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Lizards"
         "ProductCode" = "8:{13287006-3655-4BD7-9701-2E7C321FAC46}"
-        "PackageCode" = "8:{3DB407CC-70A2-426C-BB1D-8BAD33CE319E}"
+        "PackageCode" = "8:{E2BB1C25-FBD0-4164-B420-52A38C920DDD}"
         "UpgradeCode" = "8:{946E43D2-C2EF-48D0-88C3-B14B26EAEC08}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -804,7 +809,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_040FB25A26A04B92934C137F2AA3241B"
             {
-            "SourcePath" = "8:..\\Lizards\\obj\\Debug\\Lizards.dll"
+            "SourcePath" = "8:..\\Lizards\\obj\\Release\\Lizards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
@@ -832,7 +837,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_75F939967C184528A43B678979426A91"
             {
-            "SourcePath" = "8:..\\LizardsGUI\\obj\\x86\\Debug\\LizardsGUI.exe"
+            "SourcePath" = "8:..\\LizardsGUI\\obj\\x86\\Release\\LizardsGUI.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
@@ -860,7 +865,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DE2CAF72538C41C9B6F17CD007F50F2C"
             {
-            "SourcePath" = "8:..\\LizardsConsole\\obj\\x86\\Debug\\LizardsConsole.exe"
+            "SourcePath" = "8:..\\LizardsConsole\\obj\\x86\\Release\\LizardsConsole.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"

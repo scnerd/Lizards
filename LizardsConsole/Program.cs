@@ -119,6 +119,7 @@ namespace LizardsConsole
 
         private void _SaveData()
         {
+            MainMenu.PrintLine("Data saving");
             MainMenu.PrintLine(ArduinoCommunicator.SaveResults(ReportInterval, true));
         }
 
@@ -179,8 +180,8 @@ namespace LizardsConsole
         static void Main(string[] args)
         {
             Program prog = new Program();
-            ArduinoCommunicator.Connect(prog.ArduinoPort);
             ArduinoCommunicator.InitializeLizards(prog.NumLizards);
+            ArduinoCommunicator.Connect(prog.ArduinoPort);
 
             // JUNK
             foreach (LizardData liz in ArduinoCommunicator.Lizards)

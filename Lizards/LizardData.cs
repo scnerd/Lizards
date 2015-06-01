@@ -10,7 +10,7 @@ namespace Lizards
 
     public class LizardData
     {
-        public static string[] EVENTS = { "Panting", "Event 2", "Event 3 (stop)" };
+        public static string[] EVENTS = { "Panting", "LRR", "Spasming (stop)" };
         public static int NUM_EVENTS = EVENTS.Length;
 
         public class Record
