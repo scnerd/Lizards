@@ -101,7 +101,7 @@
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(378, 68);
             this.btnOk.TabIndex = 1;
-            this.btnOk.Text = "Begin Holding Start Temp";
+            this.btnOk.Text = "Confirm Settings";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 

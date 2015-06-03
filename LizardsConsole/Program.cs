@@ -144,11 +144,11 @@ namespace LizardsConsole
                 CurrentLizardMenu.PrintLine();
             };
 
-            CurrentLizardMenu.AddItem('1', LizardData.EVENTS[0], () => Liz.MainEvents[0] = new LizardData.Record(Liz, LizardData.EVENTS[0]));
-            CurrentLizardMenu.AddItem('2', LizardData.EVENTS[1], () => Liz.MainEvents[1] = new LizardData.Record(Liz, LizardData.EVENTS[1]));
-            CurrentLizardMenu.AddItem('3', LizardData.EVENTS[2], () =>
+            CurrentLizardMenu.AddItem('1', Constants.LIZARD_EVENTS[0], () => Liz.MainEvents[0] = new LizardData.Record(Liz, Constants.LIZARD_EVENTS[0]));
+            CurrentLizardMenu.AddItem('2', Constants.LIZARD_EVENTS[1], () => Liz.MainEvents[1] = new LizardData.Record(Liz, Constants.LIZARD_EVENTS[1]));
+            CurrentLizardMenu.AddItem('3', Constants.LIZARD_EVENTS[2], () =>
             {
-                Liz.MainEvents[2] = new LizardData.Record(Liz, LizardData.EVENTS[2]);
+                Liz.MainEvents[2] = new LizardData.Record(Liz, Constants.LIZARD_EVENTS[2]);
                 Liz.Stop();
             });
             CurrentLizardMenu.AddItem('N', "Make note", () => Liz.Notes.Add(new LizardData.Record(Liz, CurrentLizardMenu.RequestString("Note text: "))));

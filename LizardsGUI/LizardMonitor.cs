@@ -30,9 +30,9 @@ namespace LizardsGUI
             gphTempGraph.Clear();
             OuterResized += OnOuterResized;
             InnerResized += OnInnerResized;
-            btnEvent1.Text = LizardData.EVENTS[0];
-            btnEvent2.Text = LizardData.EVENTS[1];
-            btnStop.Text = LizardData.EVENTS[2];
+            btnEvent1.Text = Constants.LIZARD_EVENTS[0];
+            btnEvent2.Text = Constants.LIZARD_EVENTS[1];
+            btnStop.Text = Constants.LIZARD_EVENTS[2];
         }
 
         public LizardData Lizard
@@ -61,7 +61,7 @@ namespace LizardsGUI
             if (ToEnable != null) ToEnable.Enabled = true;
             lock (_Lizard.AllNotesLock)
             {
-                _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, LizardData.EVENTS[EventIndex]);
+                _Lizard.MainEvents[EventIndex] = new LizardData.Record(_Lizard, Constants.LIZARD_EVENTS[EventIndex]);
             }
             UpdateNotesTable();
         }

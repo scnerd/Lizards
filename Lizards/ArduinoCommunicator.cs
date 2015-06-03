@@ -13,7 +13,7 @@ using System.Collections.Concurrent;
 namespace Lizards
 {
     // TODO: Comment out this line to return to using the actual serial port library
-    using SerialPort = FakeSerialPort;
+    //using SerialPort = FakeSerialPort;
     using System.Timers;
     public delegate void NewAmbientTempHandler(double newTemp);
 
@@ -137,21 +137,6 @@ namespace Lizards
             Stop = (ushort)0x0003
         }
 
-        // The SerialPort connection settings, must be synchronized with how the Arduino sets up its serial communication
-        public const int BAUD_RATE = 9600;
-        public const Parity PARITY = Parity.Even;
-        public static readonly StopBits STOP_BITS = StopBits.One;
-        public const int BITS_PER_DATA = 8;
-
-        // Default value for how many seconds should elapse before saving another temperature reading for each lizard
-        public const int DEFAULT_SAVE_INTERVAL = 15;
-
-        // Defines the thermometer settings for the manifold (ambient) and lizard thermometers
-        //      Scale: 1 / How many integer values elapse between a single degree celsius (e.g., a 1/16 deg C resolution thermometer would use 1/16 as the scale)
-        //      Base: The temperature in deg C when the thermometer reports the 0 value
-        public const double AMBIENT_SCALE = 1/16d, AMBIENT_BASE = 0d;
-        public const double LIZARD_SCALE = 1/16d, LIZARD_BASE = 0d;
-
         // The serial port that the Arduino is plugged into
         private static SerialPort Port;
 
@@ -189,7 +174,7 @@ namespace Lizards
 
                 try
                 {
-                    SaveResults(DEFAULT_SAVE_INTERVAL, false);
+                    SaveResults(Constants.DEFAULT_SAVE_INTERVAL, false);
                 }
                 catch (Exception)
                 {
@@ -214,9 +199,9 @@ namespace Lizards
         {
             ReportDebug("Connecting to Arduino");
             // Prepare settings to connect to Arduino
-            Port = new SerialPort(ToConnect, BAUD_RATE, PARITY);
-            Port.StopBits = STOP_BITS;
-            Port.DataBits = BITS_PER_DATA;
+            Port = new SerialPort(ToConnect, Constants.BAUD_RATE, Constants.PARITY);
+            Port.StopBits = Constants.STOP_BITS;
+            Port.DataBits = Constants.BITS_PER_DATA;
             // Resets the Arduino upon connecting
             Port.DtrEnable = true;
             // Open the port (throws System.UnauthorizedAccessException if the port is already open elsewhere)
@@ -299,8 +284,8 @@ namespace Lizards
         public static void StartRampingTemp(double Ramp, double Target)
         {
             ReportDebug("Marking start time");
-            ExperimentStarted = ExperimentRunning = true;
             StartTime = DateTime.Now;
+            ExperimentStarted = ExperimentRunning = true;
             ReportDebug("Starting ramp of {0:F2}°C to {1:F2}°C", Ramp, Target);
             SendStartSignal(ConvertFromAmbientTemp(Ramp), ConvertFromAmbientTemp(Target));
             //Port.NewLine = END_OF_DATA_BLOCK;
@@ -327,7 +312,7 @@ namespace Lizards
         private static ushort ReadChunk()
         {
             ushort val = BitConverter.ToUInt16(ReadBytes(2), 0);
-            DataReadLog.Append(string.Format("0x{0:X4} ", val));
+            ReportDebug("Got: 0x{0:X4}", val);
             return val;
         }
 
@@ -407,6 +392,7 @@ namespace Lizards
         /// <param name="Chunk">The value to send</param>
         private static void Send(ushort Chunk)
         {
+            ReportDebug("Sent: {0:X4}", Chunk);
             Port.Write(BitConverter.GetBytes(Chunk), 0, 2);
         }
 
@@ -456,7 +442,7 @@ namespace Lizards
         /// <returns>The equivalent degrees C</returns>
         internal static double ConvertAmbientTemp(int Value)
         {
-            return Value * AMBIENT_SCALE + AMBIENT_BASE;
+            return Value * Constants.AMBIENT_SCALE + Constants.AMBIENT_BASE;
         }
 
         /// <summary>
@@ -466,41 +452,70 @@ namespace Lizards
         /// <returns>The equivalent reading from the thermometer</returns>
         internal static ushort ConvertFromAmbientTemp(double Value)
         {
-            return (ushort) Math.Round((Value - AMBIENT_BASE)/AMBIENT_SCALE);
+            return (ushort)Math.Round((Value - Constants.AMBIENT_BASE) / Constants.AMBIENT_SCALE);
         }
 
+        /// <summary>
+        /// Converts the given lizard temperature, as reported by the lizard thermometer, into degrees C
+        /// </summary>
+        /// <param name="Value">The reading from the lizard thermometer</param>
+        /// <returns>The equivalent degrees C</returns>
         internal static double ConvertLizardTemp(int Value)
         {
-            return Value * LIZARD_SCALE + LIZARD_BASE;
+            return Value * Constants.LIZARD_SCALE + Constants.LIZARD_BASE;
         }
 
+        /// <summary>
+        /// Converts the given lizard temperature, as degrees C, into the equivalent reading from the lizard thermometer
+        /// </summary>
+        /// <param name="Value">The temperature in degrees C</param>
+        /// <returns>The equivalent reading from the thermometer</returns>
         internal static ushort ConvertFromLizardTemp(double Value)
         {
-            return (ushort) Math.Round((Value - LIZARD_BASE) / LIZARD_SCALE);
+            return (ushort)Math.Round((Value - Constants.LIZARD_BASE) / Constants.LIZARD_SCALE);
         }
 
+        /// <summary>
+        /// Combines the given string by inserting the base string between them
+        /// </summary>
+        /// <param name="Base">The separator to insert between the strings</param>
+        /// <param name="Others">The strings to combine</param>
+        /// <returns>The given strings joined using the base string</returns>
         public static string Combine(this string Base, params string[] Others)
         {
+            // Note, this method declaration syntax allows this function to be used as follows:
+            // ",".Combine(str1, str2, str);
+            // With the result being the return value from this function
             return Others.Aggregate((a, b) => a + Base + b);
         }
 
+        /// <summary>
+        /// Saves the current lizard data on the given interval to a timestamped file in My Documents/Lizards directory
+        /// </summary>
+        /// <param name="ReportInterval">The number of seconds between reported lizard temperatures</param>
+        /// <param name="WriteEvenIfAlreadyWrote">Allows not writing the file if the results have already been saved</param>
+        /// <returns>The filepath to the written data file</returns>
         public static string SaveResults(int ReportInterval, bool WriteEvenIfAlreadyWrote = true)
         {
             ReportDebug("Beginning to save results");
 
+            // Check whether or not we should even write
             if (AlreadyWrote && !WriteEvenIfAlreadyWrote)
             {
                 ReportDebug("Already wrote to file");
                 return null;
             }
+            // Make sure that there's data to write
             if(!ExperimentStarted)
             {
                 ReportDebug("Experiement hasn't been started yet");
                 return null;
             }
 
-            StartTime = StartTime != default(DateTime) ? StartTime : new DateTime(0);
+            // Ensures that StartTime is something meaningful (not necessary because of ExperimentStarted flag
+            //StartTime = StartTime != default(DateTime) ? StartTime : new DateTime(0);
 
+            // Figure out the filepath to write to based on the timestamp
             string Dir = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Lizards";
             if (!Directory.Exists(Dir))
                 Directory.CreateDirectory(Dir);
@@ -508,24 +523,38 @@ namespace Lizards
             string Path = string.Format(@"{1}\Lizard Results {0}.csv", Now, Dir);
             StringBuilder OutputData = new StringBuilder();
 
+            // Easy method to format timestamps in a consistent way
             Func<DateTime, string> Format = (dt) => dt == default(DateTime) ? "" : (dt - StartTime).ToString("g");
 
+            // Make sure that the Lizards don't get modified while we're writing the data
             lock (Lizards)
             {
+                // Push the start time into the CSV file
                 OutputData.AppendLine(string.Format("Start time,{0:G}", StartTime));
                 OutputData.AppendLine();
 
+                // Push the first table headers
+                // , Ambient, Lizard 1, Lizard2, ..., Lizard N
                 OutputData.AppendLine(",Ambient," +
                                       ",".Combine(
                                           Lizards.Select(liz => string.Format("Lizard {0}", liz.Number + 1)).ToArray()));
-                for (int i = 0; i < LizardData.NUM_EVENTS; i++)
-                    OutputData.AppendLine(string.Format("{0},,{1}", LizardData.EVENTS[i],
+                // Push the timestamps for each event for each lizard, or nothing if the event hasn't happened yet
+                // Event 1, , , TIMESTAMP, TIMESTAMP, ...
+                // Event 2, , , TIMESTAMP, , ...
+                // Event 3, , , , , ...
+                for (int i = 0; i < Constants.NUM_LIZARD_EVENTS; i++)
+                    OutputData.AppendLine(string.Format("{0},,{1}", Constants.LIZARD_EVENTS[i],
                         ",".Combine(
                             Lizards.Select(liz => liz.MainEvents[i] == null ? "" : Format(liz.MainEvents[i].Timestamp))
                                 .ToArray())));
 
+                // Prep for output interval timestamps
                 int mult = 0;
                 Func<DateTime> CurrentTime = () => StartTime + TimeSpan.FromSeconds(mult*ReportInterval);
+                // For ambient and each lizard, output its first reported temperature after the current interval
+                // 0:00:00, 35.00, 27.00, 28.00, 27.00, ...
+                // 0:00:15, 35.25, 28.00, 29.00, 28.00, ...
+                // 0:00:30, 35.50, 29.00, 30.00, 29.00, ...
                 while (
                     Lizards.Any(
                         liz =>
@@ -541,8 +570,12 @@ namespace Lizards
                     mult++;
                 }
 
+                // Output header for second table
                 OutputData.AppendLine();
-                OutputData.AppendLine("Lizard,Timestamp,Lizard Temp, Ambient Temp, Note");
+                OutputData.AppendLine("Lizard,Timestamp,Lizard Temp,Ambient Temp,Note");
+
+                // For each note (including events), output the record in its entirety
+                // Lizard 1, 0:30:12, 212, 5000, Perished a tragic death
                 foreach (
                     Tuple<LizardData, LizardData.Record> rec in
                         Lizards.SelectMany(
@@ -556,7 +589,9 @@ namespace Lizards
                 }
             }
 
+            // Output the CSV data to the file
             File.WriteAllText(Path, OutputData.ToString());
+            AlreadyWrote = true;
             ReportDebug("Results saved to: {0}", Path);
 
             return Path;
@@ -564,6 +599,7 @@ namespace Lizards
 
         private static void DumpReadData()
         {
+            // Dumps the read hex data to the debug log
             ReportDebug("Data read log:");
             ReportDebug(DataReadLog.ToString());
             DataReadLog = new StringBuilder();

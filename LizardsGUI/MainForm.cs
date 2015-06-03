@@ -124,7 +124,8 @@ namespace LizardsGUI
 
         public override void Write(char value)
         {
-            Output.Invoke(new Action(() => Output.AppendText(value.ToString())));
+            if(!Output.IsDisposed)
+                Output.Invoke(new Action(() => Output.AppendText(value.ToString())));
         }
     }
 }
