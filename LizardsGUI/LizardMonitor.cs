@@ -17,19 +17,18 @@ namespace LizardsGUI
         protected static event StaticResizeHandler OuterResized;
         protected static event StaticResizeHandler InnerResized;
 
-        public const double MIN_TEMP = 20d;
-        public const double MAX_TEMP = 55d;
-
         private LizardData _Lizard;
 
         public LizardMonitor()
         {
             InitializeComponent();
-            gphTempGraph.UpperLimit = MAX_TEMP;
-            gphTempGraph.LowerLimit = MIN_TEMP;
             gphTempGraph.Clear();
+
+            // Make sure that all LizardMonitors resize when any of them resizes
             OuterResized += OnOuterResized;
             InnerResized += OnInnerResized;
+
+            // Set the button text to what it's supposed to be, as defined in Constants
             btnEvent1.Text = Constants.LIZARD_EVENTS[0];
             btnEvent2.Text = Constants.LIZARD_EVENTS[1];
             btnStop.Text = Constants.LIZARD_EVENTS[2];
@@ -40,21 +39,38 @@ namespace LizardsGUI
             get { return _Lizard; }
             set
             {
+                if(_Lizard != null)
+                    _Lizard.OnNewData -= this.OnNewData;
+                // Set up the control to properly display the Lizard's name and report its temperatures
                 _Lizard = value;
-                _Lizard.OnNewData += new NewLizardDataHandler(this.OnNewData);
+                _Lizard.OnNewData += this.OnNewData;
                 lblLizardName.Text = string.Format("Lizard {0}", value.Number + 1);
             }
         }
 
         public void OnNewData(LizardData sender, double NewTemp)
         {
+            // Put the new temperature in its label and on the graph, if we're still tracking temperatures
             if (_Lizard.IsActive)
             {
                 gphTempGraph.Add(NewTemp);
-                this.Invoke(new Action(() => lblCurrentTemp.Text = string.Format("Temp: {0:F2}°C", NewTemp)));
+                this.BeginInvoke(new Action(() =>
+                {
+                    lock (lblCurrentTemp)
+                    {
+                        if (!lblCurrentTemp.IsDisposed)
+                            lblCurrentTemp.Text = string.Format("Temp: {0:F2}°C", NewTemp);
+                    }
+                }));
             }
         }
 
+        /// <summary>
+        /// Generic handler for the multiple event buttons
+        /// </summary>
+        /// <param name="ToDisable">The button that should get gray'd out</param>
+        /// <param name="ToEnable">The button that should get enabled</param>
+        /// <param name="EventIndex">The event number to mark in the lizard</param>
         private void Event(Button ToDisable, Button ToEnable, int EventIndex)
         {
             if (ToDisable != null) ToDisable.Enabled = false;
@@ -84,6 +100,7 @@ namespace LizardsGUI
 
         private void btnNewNote_Click(object sender, EventArgs e)
         {
+            // Create the new record, and focus on its editable cell
             _Lizard.Notes.Add(new LizardData.Record(_Lizard));
             UpdateNotesTable();
             dataRecords.CurrentCell = dataRecords["Note", dataRecords.Rows.Count - 1];
@@ -92,6 +109,7 @@ namespace LizardsGUI
 
         private void dataRecords_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            // Find the record corresponding to the cell that was edited and change it accordingly
             lock (_Lizard.AllNotesLock)
             {
                 _Lizard.ImportantRecords.ElementAt(e.RowIndex).Note = dataRecords[e.ColumnIndex, e.RowIndex].Value.ToString();
@@ -101,26 +119,33 @@ namespace LizardsGUI
 
         private void sptInner_SplitterMoved(object sender, SplitterEventArgs e)
         {
+            // Resize all others when this control's inner panel is resized
             InnerResized(this, sptInner.SplitterDistance);
         }
 
         private void sptOuter_SplitterMoved(object sender, SplitterEventArgs e)
         {
+            // Resize all others when this control's outer panel is resized
             OuterResized(this, sptOuter.SplitterDistance);
         }
 
         private void OnInnerResized(LizardMonitor sender, int NewPos)
         {
+            // Resize this when another's inner panel was resized
             if (sender != this)
                 sptInner.SplitterDistance = NewPos;
         }
 
         private void OnOuterResized(LizardMonitor sender, int NewPos)
         {
+            // Resize this when another's outer panel was resized
             if (sender != this)
                 sptOuter.SplitterDistance = NewPos;
         }
 
+        /// <summary>
+        /// Outputs on the DataGridView the data that's in the lizard's records
+        /// </summary>
         private void UpdateNotesTable()
         {
             dataRecords.Rows.Clear();

@@ -48,8 +48,8 @@ namespace TextMenu
 
     public class Menu
     {
-        protected TextWriter OutStream;
-        protected TextReader InStream;
+        public TextWriter OutStream { get; protected set; }
+        public TextReader InStream { get; protected set; }
         protected bool ClearConsole;
 
         protected List<MenuItem> mItems = new List<MenuItem>();

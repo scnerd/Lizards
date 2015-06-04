@@ -13,7 +13,7 @@ using System.Collections.Concurrent;
 namespace Lizards
 {
     // TODO: Comment out this line to return to using the actual serial port library
-    //using SerialPort = FakeSerialPort;
+    // using SerialPort = FakeSerialPort;
     using System.Timers;
     public delegate void NewAmbientTempHandler(double newTemp);
 
@@ -228,6 +228,7 @@ namespace Lizards
                             var liz_temp in Lizards.Zip(temps, (liz, temp) => new Tuple<LizardData, double>(liz, temp)))
                             liz_temp.Item1.Update(liz_temp.Item2);
                     }
+                    AlreadyWrote = false;
                 }
             });
             ListenToArduino.Start();
@@ -312,7 +313,6 @@ namespace Lizards
         private static ushort ReadChunk()
         {
             ushort val = BitConverter.ToUInt16(ReadBytes(2), 0);
-            ReportDebug("Got: 0x{0:X4}", val);
             return val;
         }
 
@@ -392,7 +392,6 @@ namespace Lizards
         /// <param name="Chunk">The value to send</param>
         private static void Send(ushort Chunk)
         {
-            ReportDebug("Sent: {0:X4}", Chunk);
             Port.Write(BitConverter.GetBytes(Chunk), 0, 2);
         }
 

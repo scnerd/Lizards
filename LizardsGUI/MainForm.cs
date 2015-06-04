@@ -17,6 +17,7 @@ namespace LizardsGUI
 {
     public partial class MainForm : Form
     {
+        // Stores the variables from initialization
         private int NumLizards;
         private int ReportInterval;
         private string PortName;
@@ -31,25 +32,34 @@ namespace LizardsGUI
             gphAmbientTemp.Clear();
         }
 
+        /// <summary>
+        /// While loading, initialize the experiment and construct UI components for each lizard
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainForm_Load(object sender, EventArgs e)
         {
-                InitExperiment init = new InitExperiment();
-                if (init.ShowDialog() == DialogResult.Cancel)
-                {
-                    Application.Exit();
-                    return;
-                }
+            // Launch the init form, closing the program if is cancelled
+            InitExperiment init = new InitExperiment();
+            if (init.ShowDialog() == DialogResult.Cancel)
+            {
+                Application.Exit();
+                return;
+            }
 
-                NumLizards = init.NumLizards;
-                ReportInterval = init.ReportInterval;
-                PortName = init.ArduinoPort;
-                HoldTemp = init.HoldTemp;
-                RampTemp = init.RampTemp;
-                MaxTemp = init.MaxTemp;
+            // Save the initialization values
+            NumLizards = init.NumLizards;
+            ReportInterval = init.ReportInterval;
+            PortName = init.ArduinoPort;
+            HoldTemp = init.HoldTemp;
+            RampTemp = init.RampTemp;
+            MaxTemp = init.MaxTemp;
 
+            // Set up the serial communication
             ArduinoCommunicator.InitializeLizards(NumLizards);
-            ArduinoCommunicator.Connect(PortName);
+            ArduinoCommunicator.OnNewAmbientTemp += ArduinoCommunicator_OnNewAmbientTemp;
 
+            // Create the UI elements for each lizard
             tblLizards.SuspendLayout();
             tblLizards.RowStyles.Clear();
             for (int i = 0; i < NumLizards; i++)
@@ -62,9 +72,14 @@ namespace LizardsGUI
             }
             tblLizards.ResumeLayout();
 
-            ArduinoCommunicator.OnNewAmbientTemp += ArduinoCommunicator_OnNewAmbientTemp;
+            // Begin talking to the Arduino
+            ArduinoCommunicator.Connect(PortName);
         }
 
+        /// <summary>
+        /// When a new ambient temperature is available, display it
+        /// </summary>
+        /// <param name="newTemp">The new temperature to display</param>
         private void ArduinoCommunicator_OnNewAmbientTemp(double newTemp)
         {
             gphAmbientTemp.Add(newTemp);
@@ -89,7 +104,7 @@ namespace LizardsGUI
 
         private void btnForceStop_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("This will reset the Arduino and disable the heater, are you sure?", "Confirm reset", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+            if (MessageBox.Show("This will reset the Arduino and disable the heater, are you sure?", "Confirm reset", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
                 ArduinoCommunicator.ForceStop();
         }
 
@@ -98,9 +113,15 @@ namespace LizardsGUI
             ArduinoCommunicator.SaveResults(ReportInterval, true);
         }
 
+        /// <summary>
+        /// Captures keyboard presses to save the data when CTRL+S is pressed
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if(keyData == (Keys.Control | Keys.S))
+            if (keyData == (Keys.Control | Keys.S))
             {
                 btnSave.PerformClick();
             }
@@ -108,6 +129,9 @@ namespace LizardsGUI
         }
     }
 
+    /// <summary>
+    /// Defines a wrapper around the textbox to allow it to be written to serially via a TextWriter (used for debug output)
+    /// </summary>
     internal class TextboxWriter : TextWriter
     {
         public TextBox Output { get; private set; }
@@ -124,8 +148,14 @@ namespace LizardsGUI
 
         public override void Write(char value)
         {
-            if(!Output.IsDisposed)
-                Output.Invoke(new Action(() => Output.AppendText(value.ToString())));
+            Output.BeginInvoke(new Action(() =>
+            {
+                lock (Output)
+                {
+                    if (!Output.IsDisposed)
+                        Output.AppendText(value.ToString());
+                }
+            }));
         }
     }
 }

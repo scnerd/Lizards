@@ -31,6 +31,7 @@ namespace LizardsGUI
         private void InitializeComponent()
         {
             this.sptOuter = new System.Windows.Forms.SplitContainer();
+            this.gphTempGraph = new LineGraph.LinePainter();
             this.stpStatus = new System.Windows.Forms.StatusStrip();
             this.lblLizardName = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblCurrentTemp = new System.Windows.Forms.ToolStripStatusLabel();
@@ -45,7 +46,6 @@ namespace LizardsGUI
             this.AmbientTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LizardTemp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gphTempGraph = new LineGraph.LinePainter();
             ((System.ComponentModel.ISupportInitialize)(this.sptOuter)).BeginInit();
             this.sptOuter.Panel1.SuspendLayout();
             this.sptOuter.Panel2.SuspendLayout();
@@ -78,6 +78,26 @@ namespace LizardsGUI
             this.sptOuter.SplitterDistance = 220;
             this.sptOuter.TabIndex = 0;
             this.sptOuter.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.sptOuter_SplitterMoved);
+            // 
+            // gphTempGraph
+            // 
+            this.gphTempGraph.AutoAdjustLimits = false;
+            this.gphTempGraph.BackFillColor = System.Drawing.Color.Black;
+            this.gphTempGraph.BackLineColor = System.Drawing.Color.DarkGreen;
+            this.gphTempGraph.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gphTempGraph.HorizontalBarInterval = 13;
+            this.gphTempGraph.LineColor = System.Drawing.Color.LimeGreen;
+            this.gphTempGraph.Location = new System.Drawing.Point(0, 0);
+            this.gphTempGraph.LowerLimit = 20D;
+            this.gphTempGraph.MaxDataPoints = 1000;
+            this.gphTempGraph.Name = "gphTempGraph";
+            this.gphTempGraph.ShowDemoVals = false;
+            this.gphTempGraph.Size = new System.Drawing.Size(220, 100);
+            this.gphTempGraph.TabIndex = 0;
+            this.gphTempGraph.Transparency = ((byte)(100));
+            this.gphTempGraph.UpperLimit = 55D;
+            this.gphTempGraph.ValueInterval = 1;
+            this.gphTempGraph.VerticalBarInterval = 13;
             // 
             // stpStatus
             // 
@@ -235,26 +255,6 @@ namespace LizardsGUI
             this.Note.HeaderText = "Note";
             this.Note.Name = "Note";
             this.Note.Width = 55;
-            // 
-            // gphTempGraph
-            // 
-            this.gphTempGraph.AutoAdjustLimits = false;
-            this.gphTempGraph.BackFillColor = System.Drawing.Color.Black;
-            this.gphTempGraph.BackLineColor = System.Drawing.Color.DarkGreen;
-            this.gphTempGraph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gphTempGraph.HorizontalBarInterval = 13;
-            this.gphTempGraph.LineColor = System.Drawing.Color.LimeGreen;
-            this.gphTempGraph.Location = new System.Drawing.Point(0, 0);
-            this.gphTempGraph.LowerLimit = 0D;
-            this.gphTempGraph.MaxDataPoints = 1000;
-            this.gphTempGraph.Name = "gphTempGraph";
-            this.gphTempGraph.ShowDemoVals = false;
-            this.gphTempGraph.Size = new System.Drawing.Size(220, 100);
-            this.gphTempGraph.TabIndex = 0;
-            this.gphTempGraph.Transparency = ((byte)(100));
-            this.gphTempGraph.UpperLimit = 1D;
-            this.gphTempGraph.ValueInterval = 1;
-            this.gphTempGraph.VerticalBarInterval = 13;
             // 
             // LizardMonitor
             // 
