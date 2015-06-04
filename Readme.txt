@@ -5,7 +5,7 @@ All code is made available under the MIT license, so feel free to hack and reuse
 
 == Installation ==
 
-The Lizards application may be installed by unzipping the Installer.zip file and running setup.exe. Note that previous versions may have to be uninstalled before the installer will work properly.
+The Lizards application may be installed by unzipping the WebInstall.zip file (or Installer.zip if you need to install on a machine with no internet access) and running setup.exe. Note that previous versions may have to be uninstalled before the installer will work properly.
 
 The code can also be compiled in Visual Studio 2010, 2012, or 2013. See "Code Notes" below for prerequisites for compiling.
 

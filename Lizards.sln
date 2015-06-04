@@ -19,6 +19,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
+		WebInstall|Any CPU = WebInstall|Any CPU
+		WebInstall|Mixed Platforms = WebInstall|Mixed Platforms
+		WebInstall|x86 = WebInstall|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FA562A00-94E6-452E-99C6-B725909CBFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -31,6 +34,12 @@ Global
 		{FA562A00-94E6-452E-99C6-B725909CBFB6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FA562A00-94E6-452E-99C6-B725909CBFB6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FA562A00-94E6-452E-99C6-B725909CBFB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{FA562A00-94E6-452E-99C6-B725909CBFB6}.WebInstall|Any CPU.ActiveCfg = WebInstall|Any CPU
+		{FA562A00-94E6-452E-99C6-B725909CBFB6}.WebInstall|Any CPU.Build.0 = WebInstall|Any CPU
+		{FA562A00-94E6-452E-99C6-B725909CBFB6}.WebInstall|Mixed Platforms.ActiveCfg = WebInstall|Any CPU
+		{FA562A00-94E6-452E-99C6-B725909CBFB6}.WebInstall|Mixed Platforms.Build.0 = WebInstall|Any CPU
+		{FA562A00-94E6-452E-99C6-B725909CBFB6}.WebInstall|x86.ActiveCfg = WebInstall|Any CPU
+		{FA562A00-94E6-452E-99C6-B725909CBFB6}.WebInstall|x86.Build.0 = WebInstall|Any CPU
 		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -41,6 +50,11 @@ Global
 		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.Release|x86.ActiveCfg = Release|x86
 		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.Release|x86.Build.0 = Release|x86
+		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.WebInstall|Any CPU.ActiveCfg = WebInstall|x86
+		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.WebInstall|Mixed Platforms.ActiveCfg = WebInstall|x86
+		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.WebInstall|Mixed Platforms.Build.0 = WebInstall|x86
+		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.WebInstall|x86.ActiveCfg = WebInstall|x86
+		{9D5768DD-22BD-44B9-9E78-81B94AACAE59}.WebInstall|x86.Build.0 = WebInstall|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -51,12 +65,22 @@ Global
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Release|x86.ActiveCfg = Release|x86
 		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.Release|x86.Build.0 = Release|x86
+		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.WebInstall|Any CPU.ActiveCfg = WebInstall|x86
+		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.WebInstall|Mixed Platforms.ActiveCfg = WebInstall|x86
+		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.WebInstall|Mixed Platforms.Build.0 = WebInstall|x86
+		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.WebInstall|x86.ActiveCfg = WebInstall|x86
+		{3B30D665-06C3-4C8A-8A21-47970571D0A9}.WebInstall|x86.Build.0 = WebInstall|x86
 		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Debug|Any CPU.ActiveCfg = Debug
 		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Debug|x86.ActiveCfg = Debug
 		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Release|Any CPU.ActiveCfg = Release
 		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Release|Mixed Platforms.ActiveCfg = Release
 		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.Release|x86.ActiveCfg = Release
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.WebInstall|Any CPU.ActiveCfg = WebInstall
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.WebInstall|Mixed Platforms.ActiveCfg = WebInstall
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.WebInstall|Mixed Platforms.Build.0 = WebInstall
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.WebInstall|x86.ActiveCfg = WebInstall
+		{457DC38D-9979-47C8-8FEA-D91FA3C6A333}.WebInstall|x86.Build.0 = WebInstall
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
