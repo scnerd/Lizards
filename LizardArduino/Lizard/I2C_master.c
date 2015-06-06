@@ -1,3 +1,5 @@
+// https://github.com/devthrash/I2C-master-lib
+
 #ifndef  F_CPU
 #define F_CPU 16000000UL
 #endif

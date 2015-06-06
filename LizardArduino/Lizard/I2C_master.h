@@ -1,3 +1,5 @@
+// https://github.com/devthrash/I2C-master-lib
+
 #ifndef I2C_MASTER_H
 #define I2C_MASTER_H
 
