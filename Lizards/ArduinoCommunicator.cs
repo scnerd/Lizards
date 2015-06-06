@@ -169,8 +169,15 @@ namespace Lizards
                 catch (Exception)
                 {
                 }
-                if (Port != null && Port.IsOpen)
-                    Port.Close();
+                try
+                {
+                    if (Port != null && Port.IsOpen)
+                        Port.Close();
+                }
+                catch(IOException)
+                {
+                    
+                }
 
                 try
                 {

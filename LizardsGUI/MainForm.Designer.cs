@@ -33,13 +33,13 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tblLizards = new System.Windows.Forms.TableLayoutPanel();
-            this.gphAmbientTemp = new LineGraph.LinePainter();
             this.txtDebugLog = new System.Windows.Forms.TextBox();
             this.btnHold = new System.Windows.Forms.Button();
             this.btnRamp = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnForceStop = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.gphAmbientTemp = new LineGraph.LinePainter();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -125,26 +125,6 @@
             this.tblLizards.Size = new System.Drawing.Size(645, 340);
             this.tblLizards.TabIndex = 0;
             // 
-            // gphAmbientTemp
-            // 
-            this.gphAmbientTemp.AutoAdjustLimits = false;
-            this.gphAmbientTemp.BackFillColor = System.Drawing.Color.Black;
-            this.gphAmbientTemp.BackLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.gphAmbientTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gphAmbientTemp.HorizontalBarInterval = 13;
-            this.gphAmbientTemp.LineColor = System.Drawing.Color.Red;
-            this.gphAmbientTemp.Location = new System.Drawing.Point(0, 0);
-            this.gphAmbientTemp.LowerLimit = 27D;
-            this.gphAmbientTemp.MaxDataPoints = 3000;
-            this.gphAmbientTemp.Name = "gphAmbientTemp";
-            this.gphAmbientTemp.ShowDemoVals = false;
-            this.gphAmbientTemp.Size = new System.Drawing.Size(645, 82);
-            this.gphAmbientTemp.TabIndex = 0;
-            this.gphAmbientTemp.Transparency = ((byte)(100));
-            this.gphAmbientTemp.UpperLimit = 50D;
-            this.gphAmbientTemp.ValueInterval = 1;
-            this.gphAmbientTemp.VerticalBarInterval = 13;
-            // 
             // txtDebugLog
             // 
             this.txtDebugLog.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -210,6 +190,26 @@
             this.btnSave.Text = "Save Results";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // gphAmbientTemp
+            // 
+            this.gphAmbientTemp.AutoAdjustLimits = false;
+            this.gphAmbientTemp.BackFillColor = System.Drawing.Color.Black;
+            this.gphAmbientTemp.BackLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.gphAmbientTemp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gphAmbientTemp.HorizontalBarInterval = 13;
+            this.gphAmbientTemp.LineColor = System.Drawing.Color.Red;
+            this.gphAmbientTemp.Location = new System.Drawing.Point(0, 0);
+            this.gphAmbientTemp.LowerLimit = 25D;
+            this.gphAmbientTemp.MaxDataPoints = 3000;
+            this.gphAmbientTemp.Name = "gphAmbientTemp";
+            this.gphAmbientTemp.ShowDemoVals = false;
+            this.gphAmbientTemp.Size = new System.Drawing.Size(645, 82);
+            this.gphAmbientTemp.TabIndex = 0;
+            this.gphAmbientTemp.Transparency = ((byte)(100));
+            this.gphAmbientTemp.UpperLimit = 60D;
+            this.gphAmbientTemp.ValueInterval = 1;
+            this.gphAmbientTemp.VerticalBarInterval = 13;
             // 
             // MainForm
             // 
