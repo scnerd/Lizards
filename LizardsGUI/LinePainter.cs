@@ -187,7 +187,7 @@ namespace LineGraph
                 g.DrawLines(new Pen(LineColor), path);
             }
 
-            this.pictureBox1.Image = StoredImage;
+            this.picDisplay.Image = StoredImage;
             if (this.InvokeRequired)
             {
                 if (this.IsHandleCreated)

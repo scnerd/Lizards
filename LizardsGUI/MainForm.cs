@@ -24,12 +24,16 @@ namespace LizardsGUI
         private double HoldTemp;
         private double RampTemp;
         private double MaxTemp;
+        private double HeaterTemp;
 
         public MainForm()
         {
             InitializeComponent();
             ArduinoCommunicator.AddDebugOutput(new TextboxWriter(txtDebugLog));
-            gphAmbientTemp.Clear();
+            gphEnvironTemp.Clear();
+
+            gphEnvironTemp.Text = "Lizard Environment Temp";
+            gphHeaterTemp.Text = "Heating Chamber Temp";
         }
 
         /// <summary>
@@ -57,7 +61,8 @@ namespace LizardsGUI
 
             // Set up the serial communication
             ArduinoCommunicator.InitializeLizards(NumLizards);
-            ArduinoCommunicator.OnNewAmbientTemp += ArduinoCommunicator_OnNewAmbientTemp;
+            ArduinoCommunicator.OnNewEnvironmentTemp += ArduinoCommunicator_OnNewEnvironTemp;
+            ArduinoCommunicator.OnNewHeaterTemp += ArduinoCommunicator_OnNewHeaterTemp;
 
             // Create the UI elements for each lizard
             tblLizards.SuspendLayout();
@@ -77,18 +82,29 @@ namespace LizardsGUI
         }
 
         /// <summary>
+        /// When a new heating chamber temperature is available, display it
+        /// </summary>
+        /// <param name="newTemp">The new temperature to display</param>
+
+        private void ArduinoCommunicator_OnNewHeaterTemp(double newTemp)
+        {
+            gphHeaterTemp.Add(newTemp);
+            lblHeaterTemp.Text = string.Format("Heater Temp: {0:F2}°C", newTemp);
+        }
+
+        /// <summary>
         /// When a new ambient temperature is available, display it
         /// </summary>
         /// <param name="newTemp">The new temperature to display</param>
-        private void ArduinoCommunicator_OnNewAmbientTemp(double newTemp)
+        private void ArduinoCommunicator_OnNewEnvironTemp(double newTemp)
         {
-            gphAmbientTemp.Add(newTemp);
-            lblAmbientTemp.Text = string.Format("Ambient Temp: {0:F2}°C", newTemp);
+            gphEnvironTemp.Add(newTemp);
+            lblEnvironTemp.Text = string.Format("Environment Temp: {0:F2}°C", newTemp);
         }
 
         private void btnHold_Click(object sender, EventArgs e)
         {
-            ArduinoCommunicator.StartHoldingTemp(HoldTemp);
+            ArduinoCommunicator.StartHoldingTemp(HoldTemp, HeaterTemp);
         }
 
         private void btnRamp_Click(object sender, EventArgs e)

@@ -28,7 +28,7 @@ namespace Lizards
             {
                 Timestamp = DateTime.Now;
                 LizardTemp = Owner.CurrentLizardTemp;
-                AmbientTemp = CurrentAmbientTemp;
+                AmbientTemp = CurrentEnvironmentTemp;
                 this.Note = Note;
             }
         }
@@ -43,7 +43,8 @@ namespace Lizards
         //public List<double> Temperatures = new List<double>();
         //public double CurrentLizardTemp { get { return Temperatures.Last(); } }
         public double CurrentLizardTemp { get; private set; }
-        public static double CurrentAmbientTemp = double.NaN;
+        public static double CurrentEnvironmentTemp = double.NaN;
+        public static double CurrentHeaterTemp = double.NaN;
 
         // Tracks whether this lizard is still being actively monitored
         public bool IsActive { get; private set; }

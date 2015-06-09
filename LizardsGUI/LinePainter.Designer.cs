@@ -30,34 +30,34 @@ namespace LineGraph
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.picDisplay = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(150, 150);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.picDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picDisplay.Location = new System.Drawing.Point(0, 0);
+            this.picDisplay.Name = "pictureBox1";
+            this.picDisplay.Size = new System.Drawing.Size(150, 150);
+            this.picDisplay.TabIndex = 0;
+            this.picDisplay.TabStop = false;
             // 
             // LinePainter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.picDisplay);
             this.Name = "LinePainter";
             this.Load += new System.EventHandler(this.LinePainter_Load);
             this.SizeChanged += new System.EventHandler(this.LinePainter_SizeChanged);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private PictureBox pictureBox1;
+        protected PictureBox picDisplay;
     }
 }

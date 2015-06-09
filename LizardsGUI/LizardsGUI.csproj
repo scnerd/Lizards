@@ -67,6 +67,12 @@
     <Compile Include="InitExperiment.Designer.cs">
       <DependentUpon>InitExperiment.cs</DependentUpon>
     </Compile>
+    <Compile Include="LabelledLinePainter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LabelledLinePainter.Designer.cs">
+      <DependentUpon>LabelledLinePainter.cs</DependentUpon>
+    </Compile>
     <Compile Include="LinePainter.cs">
       <SubType>UserControl</SubType>
     </Compile>

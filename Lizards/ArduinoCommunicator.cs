@@ -13,7 +13,7 @@ using System.Collections.Concurrent;
 namespace Lizards
 {
     // TODO: Comment out this line to return to using the actual serial port library
-    // using SerialPort = FakeSerialPort;
+     using SerialPort = FakeSerialPort;
     using System.Timers;
     public delegate void NewAmbientTempHandler(double newTemp);
 
@@ -27,7 +27,7 @@ namespace Lizards
 
         static FakeSerialPort ()
         {
-            LizardData.CurrentAmbientTemp = 35;
+            LizardData.CurrentEnvironmentTemp = 35;
         }
 
         public FakeSerialPort(string a, int b, Parity c)
@@ -74,7 +74,7 @@ namespace Lizards
         public void demo_junk()
         {
             var timer1 = new Timer();
-            ds = new double[ArduinoCommunicator.Lizards.Length + 1];
+            ds = new double[ArduinoCommunicator.Lizards.Length + 2];
             rnd = new Random();
             timer1.Interval = 100;
             timer1.Elapsed += timer1_Tick;
@@ -127,7 +127,8 @@ namespace Lizards
     public static class ArduinoCommunicator
     {
         // Defines an event that gets triggered when a new ambient temperature reading is received
-        public static event NewAmbientTempHandler OnNewAmbientTemp;
+        public static event NewAmbientTempHandler OnNewEnvironmentTemp;
+        public static event NewAmbientTempHandler OnNewHeaterTemp;
 
         // Defines the binary values for each signal that can be sent to the Arduino
         private enum ArduinoSignal
@@ -223,11 +224,14 @@ namespace Lizards
                 {
                     // Get the temperature readings from the serial signal
                     double[] temps = ReadTemps();
-                    // Deal with the ambient temperature first (always the first value)
-                    if(OnNewAmbientTemp != null)
-                        OnNewAmbientTemp(temps[0]);
-                    LizardData.CurrentAmbientTemp = temps[0];
-                    temps = temps.Skip(1).ToArray(); // Drop the first value, since we've used it already
+                    // Deal with the ambient temperatures first (always the first values)
+                    if(OnNewEnvironmentTemp != null)
+                        OnNewEnvironmentTemp(temps[1]);
+                    if (OnNewHeaterTemp != null)
+                        OnNewHeaterTemp(temps[0]);
+                    LizardData.CurrentEnvironmentTemp = temps[1];
+                    LizardData.CurrentHeaterTemp = temps[0];
+                    temps = temps.Skip(2).ToArray(); // Drop the first value, since we've used it already
                     lock (Lizards)
                     {
                         // Handle all the lizard temps
@@ -278,10 +282,10 @@ namespace Lizards
         /// Tells the Arduino to try to hold steady at the start temperature
         /// </summary>
         /// <param name="Temp">The temperature to hold (in degrees C)</param>
-        public static void StartHoldingTemp(double Temp)
+        public static void StartHoldingTemp(double Temp, double HeatingChamber)
         {
             ReportDebug("Beginning to hold {0:F2}°C", Temp);
-            SendHoldSignal(ConvertFromAmbientTemp(Temp));
+            SendHoldSignal(ConvertFromAmbientTemp(Temp), ConvertFromAmbientTemp(HeatingChamber));
         }
 
         /// <summary>
@@ -359,9 +363,11 @@ namespace Lizards
             List<double> lizard_temps = new List<double>();
             try
             {
-                double ambient = ConvertAmbientTemp(Temps[0]);
-                lizard_temps = Lizards.Select((junk, idx) => ConvertLizardTemp(Temps[idx + 1])).ToList();
-                lizard_temps.Insert(0, ambient);
+                double heater = ConvertAmbientTemp(Temps[0]);
+                double environ = ConvertAmbientTemp(Temps[1]);
+                lizard_temps = Lizards.Select((junk, idx) => ConvertLizardTemp(Temps[idx + 2])).ToList();
+                lizard_temps.Insert(0, heater);
+                lizard_temps.Insert(1, environ);
             }
             catch (IndexOutOfRangeException)
             {
@@ -415,10 +421,11 @@ namespace Lizards
         /// Sends the "Hold" signal to the Arduino
         /// </summary>
         /// <param name="Target">The temperature to hold</param>
-        private static void SendHoldSignal(ushort Target)
+        private static void SendHoldSignal(ushort Target, ushort Heater)
         {
             Send(ArduinoSignal.Hold);
             Send(Target);
+            Send(Heater);
         }
 
         /// <summary>

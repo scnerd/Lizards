@@ -46,9 +46,12 @@
             this.numMaxTemp = new System.Windows.Forms.NumericUpDown();
             this.numRampTemp = new System.Windows.Forms.NumericUpDown();
             this.numHoldTemp = new System.Windows.Forms.NumericUpDown();
-            this.lblMaxTemp = new System.Windows.Forms.Label();
             this.lblRampTemp = new System.Windows.Forms.Label();
             this.lblHoldTemp = new System.Windows.Forms.Label();
+            this.lblMaxTemp = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.numHeater = new System.Windows.Forms.NumericUpDown();
+            this.lblHeater = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numNumLizards)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReport)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -56,16 +59,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.numMaxTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRampTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHoldTemp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHeater)).BeginInit();
             this.SuspendLayout();
             // 
             // lblNumLizards
             // 
             this.lblNumLizards.AutoSize = true;
             this.lblNumLizards.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblNumLizards.Location = new System.Drawing.Point(3, 38);
+            this.lblNumLizards.Location = new System.Drawing.Point(3, 41);
             this.lblNumLizards.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblNumLizards.Name = "lblNumLizards";
-            this.lblNumLizards.Size = new System.Drawing.Size(120, 13);
+            this.lblNumLizards.Size = new System.Drawing.Size(119, 13);
             this.lblNumLizards.TabIndex = 7;
             this.lblNumLizards.Text = "Number of Lizards:";
             this.lblNumLizards.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -73,7 +77,7 @@
             // numNumLizards
             // 
             this.numNumLizards.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numNumLizards.Location = new System.Drawing.Point(129, 34);
+            this.numNumLizards.Location = new System.Drawing.Point(128, 37);
             this.numNumLizards.Maximum = new decimal(new int[] {
             25,
             0,
@@ -97,9 +101,9 @@
             // btnOk
             // 
             this.btnOk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnOk.Location = new System.Drawing.Point(3, 222);
+            this.btnOk.Location = new System.Drawing.Point(3, 275);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(378, 68);
+            this.btnOk.Size = new System.Drawing.Size(378, 85);
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "Confirm Settings";
             this.btnOk.UseVisualStyleBackColor = true;
@@ -109,7 +113,7 @@
             // 
             this.cmbComPorts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbComPorts.FormattingEnabled = true;
-            this.cmbComPorts.Location = new System.Drawing.Point(129, 3);
+            this.cmbComPorts.Location = new System.Drawing.Point(128, 3);
             this.cmbComPorts.Name = "cmbComPorts";
             this.cmbComPorts.Size = new System.Drawing.Size(120, 21);
             this.cmbComPorts.TabIndex = 0;
@@ -121,7 +125,7 @@
             this.lblComPorts.Location = new System.Drawing.Point(3, 7);
             this.lblComPorts.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblComPorts.Name = "lblComPorts";
-            this.lblComPorts.Size = new System.Drawing.Size(120, 13);
+            this.lblComPorts.Size = new System.Drawing.Size(119, 13);
             this.lblComPorts.TabIndex = 6;
             this.lblComPorts.Text = "Arduino Port:";
             this.lblComPorts.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -134,7 +138,7 @@
             0,
             0,
             0});
-            this.numReport.Location = new System.Drawing.Point(129, 65);
+            this.numReport.Location = new System.Drawing.Point(128, 71);
             this.numReport.Maximum = new decimal(new int[] {
             60,
             0,
@@ -159,10 +163,10 @@
             // 
             this.lblReport.AutoSize = true;
             this.lblReport.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblReport.Location = new System.Drawing.Point(3, 69);
+            this.lblReport.Location = new System.Drawing.Point(3, 75);
             this.lblReport.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblReport.Name = "lblReport";
-            this.lblReport.Size = new System.Drawing.Size(120, 13);
+            this.lblReport.Size = new System.Drawing.Size(119, 13);
             this.lblReport.TabIndex = 8;
             this.lblReport.Text = "Report Interval (s):";
             this.lblReport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -170,10 +174,10 @@
             // btnComPorts
             // 
             this.btnComPorts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnComPorts.Location = new System.Drawing.Point(262, 3);
+            this.btnComPorts.Location = new System.Drawing.Point(261, 3);
             this.btnComPorts.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnComPorts.Name = "btnComPorts";
-            this.btnComPorts.Size = new System.Drawing.Size(106, 23);
+            this.btnComPorts.Size = new System.Drawing.Size(107, 26);
             this.btnComPorts.TabIndex = 3;
             this.btnComPorts.Text = "Refresh";
             this.btnComPorts.UseVisualStyleBackColor = true;
@@ -182,10 +186,10 @@
             // btnNumLizards
             // 
             this.btnNumLizards.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnNumLizards.Location = new System.Drawing.Point(262, 34);
+            this.btnNumLizards.Location = new System.Drawing.Point(261, 37);
             this.btnNumLizards.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnNumLizards.Name = "btnNumLizards";
-            this.btnNumLizards.Size = new System.Drawing.Size(106, 23);
+            this.btnNumLizards.Size = new System.Drawing.Size(107, 26);
             this.btnNumLizards.TabIndex = 4;
             this.btnNumLizards.Text = "Reset";
             this.btnNumLizards.UseVisualStyleBackColor = true;
@@ -194,10 +198,10 @@
             // btnReport
             // 
             this.btnReport.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnReport.Location = new System.Drawing.Point(262, 65);
+            this.btnReport.Location = new System.Drawing.Point(261, 71);
             this.btnReport.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnReport.Name = "btnReport";
-            this.btnReport.Size = new System.Drawing.Size(106, 23);
+            this.btnReport.Size = new System.Drawing.Size(107, 26);
             this.btnReport.TabIndex = 5;
             this.btnReport.Text = "Reset";
             this.btnReport.UseVisualStyleBackColor = true;
@@ -216,7 +220,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(384, 293);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(384, 363);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // tableLayoutPanel2
@@ -224,8 +228,9 @@
             this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel2.ColumnCount = 3;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel2.Controls.Add(this.lblHeater, 0, 6);
             this.tableLayoutPanel2.Controls.Add(this.btnMaxTemp, 2, 5);
             this.tableLayoutPanel2.Controls.Add(this.btnRampTemp, 2, 4);
             this.tableLayoutPanel2.Controls.Add(this.btnHoldTemp, 2, 3);
@@ -244,27 +249,30 @@
             this.tableLayoutPanel2.Controls.Add(this.numNumLizards, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.lblRampTemp, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.lblHoldTemp, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.button1, 2, 6);
+            this.tableLayoutPanel2.Controls.Add(this.numHeater, 1, 6);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 15);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(3, 15, 3, 15);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 6;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(378, 189);
+            this.tableLayoutPanel2.RowCount = 7;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.57086F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.57086F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(378, 242);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // btnMaxTemp
             // 
             this.btnMaxTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnMaxTemp.Location = new System.Drawing.Point(262, 158);
+            this.btnMaxTemp.Location = new System.Drawing.Point(261, 173);
             this.btnMaxTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 8);
             this.btnMaxTemp.Name = "btnMaxTemp";
-            this.btnMaxTemp.Size = new System.Drawing.Size(106, 23);
+            this.btnMaxTemp.Size = new System.Drawing.Size(107, 24);
             this.btnMaxTemp.TabIndex = 16;
             this.btnMaxTemp.Text = "Reset";
             this.btnMaxTemp.UseVisualStyleBackColor = true;
@@ -273,10 +281,10 @@
             // btnRampTemp
             // 
             this.btnRampTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnRampTemp.Location = new System.Drawing.Point(262, 127);
+            this.btnRampTemp.Location = new System.Drawing.Point(261, 139);
             this.btnRampTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnRampTemp.Name = "btnRampTemp";
-            this.btnRampTemp.Size = new System.Drawing.Size(106, 23);
+            this.btnRampTemp.Size = new System.Drawing.Size(107, 26);
             this.btnRampTemp.TabIndex = 15;
             this.btnRampTemp.Text = "Reset";
             this.btnRampTemp.UseVisualStyleBackColor = true;
@@ -285,10 +293,10 @@
             // btnHoldTemp
             // 
             this.btnHoldTemp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnHoldTemp.Location = new System.Drawing.Point(262, 96);
+            this.btnHoldTemp.Location = new System.Drawing.Point(261, 105);
             this.btnHoldTemp.Margin = new System.Windows.Forms.Padding(10, 3, 10, 5);
             this.btnHoldTemp.Name = "btnHoldTemp";
-            this.btnHoldTemp.Size = new System.Drawing.Size(106, 23);
+            this.btnHoldTemp.Size = new System.Drawing.Size(107, 26);
             this.btnHoldTemp.TabIndex = 14;
             this.btnHoldTemp.Text = "Reset";
             this.btnHoldTemp.UseVisualStyleBackColor = true;
@@ -303,7 +311,7 @@
             0,
             0,
             131072});
-            this.numMaxTemp.Location = new System.Drawing.Point(129, 158);
+            this.numMaxTemp.Location = new System.Drawing.Point(128, 173);
             this.numMaxTemp.Name = "numMaxTemp";
             this.numMaxTemp.Size = new System.Drawing.Size(120, 20);
             this.numMaxTemp.TabIndex = 11;
@@ -323,7 +331,7 @@
             0,
             0,
             131072});
-            this.numRampTemp.Location = new System.Drawing.Point(129, 127);
+            this.numRampTemp.Location = new System.Drawing.Point(128, 139);
             this.numRampTemp.Maximum = new decimal(new int[] {
             2,
             0,
@@ -353,7 +361,7 @@
             0,
             0,
             131072});
-            this.numHoldTemp.Location = new System.Drawing.Point(129, 96);
+            this.numHoldTemp.Location = new System.Drawing.Point(128, 105);
             this.numHoldTemp.Name = "numHoldTemp";
             this.numHoldTemp.Size = new System.Drawing.Size(120, 20);
             this.numHoldTemp.TabIndex = 13;
@@ -364,26 +372,14 @@
             0,
             0});
             // 
-            // lblMaxTemp
-            // 
-            this.lblMaxTemp.AutoSize = true;
-            this.lblMaxTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblMaxTemp.Location = new System.Drawing.Point(3, 162);
-            this.lblMaxTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
-            this.lblMaxTemp.Name = "lblMaxTemp";
-            this.lblMaxTemp.Size = new System.Drawing.Size(120, 13);
-            this.lblMaxTemp.TabIndex = 11;
-            this.lblMaxTemp.Text = "Max Temp (C):";
-            this.lblMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // lblRampTemp
             // 
             this.lblRampTemp.AutoSize = true;
             this.lblRampTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblRampTemp.Location = new System.Drawing.Point(3, 131);
+            this.lblRampTemp.Location = new System.Drawing.Point(3, 143);
             this.lblRampTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblRampTemp.Name = "lblRampTemp";
-            this.lblRampTemp.Size = new System.Drawing.Size(120, 13);
+            this.lblRampTemp.Size = new System.Drawing.Size(119, 13);
             this.lblRampTemp.TabIndex = 9;
             this.lblRampTemp.Text = "Ramp (C / min):";
             this.lblRampTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -392,20 +388,76 @@
             // 
             this.lblHoldTemp.AutoSize = true;
             this.lblHoldTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblHoldTemp.Location = new System.Drawing.Point(3, 100);
+            this.lblHoldTemp.Location = new System.Drawing.Point(3, 109);
             this.lblHoldTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
             this.lblHoldTemp.Name = "lblHoldTemp";
-            this.lblHoldTemp.Size = new System.Drawing.Size(120, 13);
+            this.lblHoldTemp.Size = new System.Drawing.Size(119, 13);
             this.lblHoldTemp.TabIndex = 10;
             this.lblHoldTemp.Text = "Hold / Start Temp (C):";
             this.lblHoldTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblMaxTemp
+            // 
+            this.lblMaxTemp.AutoSize = true;
+            this.lblMaxTemp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblMaxTemp.Location = new System.Drawing.Point(3, 177);
+            this.lblMaxTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblMaxTemp.Name = "lblMaxTemp";
+            this.lblMaxTemp.Size = new System.Drawing.Size(119, 13);
+            this.lblMaxTemp.TabIndex = 11;
+            this.lblMaxTemp.Text = "Max Temp (C):";
+            this.lblMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.Location = new System.Drawing.Point(261, 208);
+            this.button1.Margin = new System.Windows.Forms.Padding(10, 3, 10, 8);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(107, 26);
+            this.button1.TabIndex = 22;
+            this.button1.Text = "Reset";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // numHeater
+            // 
+            this.numHeater.DecimalPlaces = 2;
+            this.numHeater.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.numHeater.Increment = new decimal(new int[] {
+            25,
+            0,
+            0,
+            131072});
+            this.numHeater.Location = new System.Drawing.Point(128, 208);
+            this.numHeater.Name = "numHeater";
+            this.numHeater.Size = new System.Drawing.Size(120, 20);
+            this.numHeater.TabIndex = 23;
+            this.numHeater.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numHeater.Value = new decimal(new int[] {
+            75,
+            0,
+            0,
+            0});
+            // 
+            // lblHeater
+            // 
+            this.lblHeater.AutoSize = true;
+            this.lblHeater.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblHeater.Location = new System.Drawing.Point(3, 212);
+            this.lblHeater.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblHeater.Name = "lblHeater";
+            this.lblHeater.Size = new System.Drawing.Size(119, 13);
+            this.lblHeater.TabIndex = 24;
+            this.lblHeater.Text = "Heating Chamber (C):";
+            this.lblHeater.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // InitExperiment
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 293);
+            this.ClientSize = new System.Drawing.Size(384, 363);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "InitExperiment";
@@ -419,6 +471,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numMaxTemp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRampTemp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHoldTemp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numHeater)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -443,8 +496,11 @@
         private System.Windows.Forms.NumericUpDown numMaxTemp;
         private System.Windows.Forms.NumericUpDown numRampTemp;
         private System.Windows.Forms.NumericUpDown numHoldTemp;
-        private System.Windows.Forms.Label lblMaxTemp;
         private System.Windows.Forms.Label lblRampTemp;
         private System.Windows.Forms.Label lblHoldTemp;
+        private System.Windows.Forms.Label lblHeater;
+        private System.Windows.Forms.Label lblMaxTemp;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.NumericUpDown numHeater;
     }
 }

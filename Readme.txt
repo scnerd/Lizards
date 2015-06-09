@@ -45,8 +45,38 @@ Also, the original interface programmer may be reached at jexmax@gmail.com for f
 
 == Code Notes ==
 
+=== Source Code ===
+
 The program is split into a library and two applications. The library (Lizards.dll) handles all communication and state maintenance, and is usable by other .NET applications. The two applications merely provide skins over this. Issues in communication should thus be limited to the Lizards library.
 
 In order to open the Lizards solution, the coder must have Visual Studio 2010, 2012, or 2013 (with C#, so some VS Express versions will not work), as well as .NET 4.0 Client Profile available. To load the Installer project successfully, you must have downloaded and installed the Microsoft Visual Studio 20XX Installer Projects, which stopped being included by default in VS 2012. It should have been available in 2010, and can be installed in 2013 using the following link: https://visualstudiogallery.msdn.microsoft.com/9abe329c-9bba-44a1-be59-0fbf6151054d
 
 The code is largely commented, besides some of the helper classes that just perform small, modular tasks. See the comments and code headers for help if you need to recode anything.
+
+=== Communication ===
+
+The communication between the Arduino and the PC takes place entirely as 16-bit integers.
+
+The following commands can be sent from the PC to the Arduino
+
+HOLD:  0x0001 0xTARG 0xHEAT
+START: 0x0002 0xRAMP 0xUPTO
+STOP:  0x0003
+Where
+   TARG: The temperature to hold the environment at while in the "holding" state
+   HEAT: The temperature to maintain in the heating chamber until stopped
+   RAMP: The temperature change per minute to maintain while in the "ramping" state
+   UPTO: The temperature at which to stop ramping, the max the environment should ever reach
+   
+   NOTE: ALL TEMPERATURES SENT TO THE ARDUINO ARE SCALED USING THE "AMBIENT" THERMOMETER SETTINGS. Thus, if the ambient thermometer reports 16 integer values per degree Celsius, then a ramp temperature of 1 degree per minute would be transmitted as 16, and a target of 50 C would be reported as 50*16=320.
+   NOTE: It is assumed that the heating chamber and the environment use the same thermometer type. Arduino-side scaling will be needed if this is not true.
+   
+The Arduino responds to the PC using the following packet form
+
+0xDEAD 0xBEEF 0xHEAT 0xENVI 0xLIZ1 0xLIZ2 ... 0xLIZN 0xDEAD 0xBEEF
+Where
+   DEAD: 0xDEAD, exactly like it sounds like
+   BEEF: 0xBEEF, exactly like it sounds like. These two values are used as unique packet border values to ensure that data doesn't get written to the wrong variables
+   HEAT: The temperature in the heating chamber
+   ENVI: The temperature in the lizard environment
+   LIZN: The temperature of lizard number N - note that these are the only temperatures scaled using the lizard thermometer settings

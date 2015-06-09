@@ -16,10 +16,10 @@ namespace LizardsGUI
         public int NumLizards;
         public int ReportInterval;
         public string ArduinoPort;
-        public double HoldTemp, RampTemp, MaxTemp;
+        public double HoldTemp, RampTemp, MaxTemp, HeaterTemp;
 
         private int defaultNumLizards, defaultReportInterval;
-        private decimal defaultHold, defaultRamp, defaultMax;
+        private decimal defaultHold, defaultRamp, defaultMax, defaultHeater;
 
         public InitExperiment()
         {
@@ -29,16 +29,18 @@ namespace LizardsGUI
             defaultHold = numHoldTemp.Value;
             defaultRamp = numRampTemp.Value;
             defaultMax = numMaxTemp.Value;
+            defaultHeater = numHeater.Value;
             ResetComPorts();
         }
 
         private void InitExperiment_FormClosing(object sender, FormClosingEventArgs e)
         {
             NumLizards = (int)numNumLizards.Value;
-            ReportInterval = (int) numReport.Value;
-            HoldTemp = (double) numHoldTemp.Value;
-            RampTemp = (double) numRampTemp.Value;
-            MaxTemp = (double) numMaxTemp.Value;
+            ReportInterval = (int)numReport.Value;
+            HoldTemp = (double)numHoldTemp.Value;
+            RampTemp = (double)numRampTemp.Value;
+            MaxTemp = (double)numMaxTemp.Value;
+            HeaterTemp = (double)numHeater.Value;
             // This just drops an empty port name if there is no port selected (only happens when no ports are available, in which case we're closing anyway)
             ArduinoPort = (cmbComPorts.SelectedItem ?? "").ToString();
         }
@@ -109,6 +111,11 @@ namespace LizardsGUI
         private void btnMaxTemp_Click(object sender, EventArgs e)
         {
             numMaxTemp.Value = defaultMax;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            numHeater.Value = defaultHeater;
         }
     }
 }

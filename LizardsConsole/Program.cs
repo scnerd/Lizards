@@ -18,7 +18,7 @@ namespace LizardsConsole
         public int NumLizards;
         public int ReportInterval;
         public string ArduinoPort;
-        public double HoldTemp, RampTemp, MaxTemp;
+        public double HoldTemp, RampTemp, MaxTemp, HeaterTemp;
 
         public Program()
         {
@@ -51,6 +51,7 @@ namespace LizardsConsole
             HoldTemp = MainMenu.RequestDouble("Hold temperature in C (default: {0}): ", Default: 27).Value;
             RampTemp = MainMenu.RequestDouble("Ramp temperature in C/min (default: {0}): ", Default: 1).Value;
             MaxTemp = MainMenu.RequestDouble("Max temperature in C (default: {0}): ", Default: 50).Value;
+            HeaterTemp = MainMenu.RequestDouble("Max temperature in C (default: {0}): ", Default: 75).Value;
 
             InitializeMenus();
         }
@@ -121,10 +122,17 @@ namespace LizardsConsole
                     percent = (liz.CurrentLizardTemp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
                     Console.WriteLine(string.Format("Lizard {0,2}: [{{0,-{1}}}] {2:F2}C", liz.Number + 1, bar_size, liz.CurrentLizardTemp), string.Concat(Enumerable.Repeat("-", (int)(percent * bar_size))));
                 }
-                // ... and the same thing for the ambient temperature ...
+                // ... and the same thing for the environment temperature ...
+                Console.WriteLine();
                 Console.WriteLine(string.Format(@"{{0,{0}}}C{{1,{1}}}C", 12, Console.WindowWidth - 12 - 9), HoldTemp, MaxTemp);
-                percent = (LizardData.CurrentAmbientTemp - HoldTemp) / (MaxTemp - HoldTemp);
-                Console.WriteLine(string.Format("Ambient :  [{{0,-{0}}}] {1:F2}C", bar_size, LizardData.CurrentAmbientTemp), string.Concat(Enumerable.Repeat("-", (int)(percent * bar_size))));
+                percent = (LizardData.CurrentEnvironmentTemp - HoldTemp) / (MaxTemp - HoldTemp);
+                Console.WriteLine(string.Format("Environ :  [{{0,-{0}}}] {1:F2}C", bar_size, LizardData.CurrentEnvironmentTemp), string.Concat(Enumerable.Repeat("-", (int)(percent * bar_size))));
+                // ... and the same thing for the heating chamber temperature ...
+                Console.WriteLine();
+                Console.WriteLine(string.Format(@"{{0,{0}}}C{{1,{1}}}C", 12, Console.WindowWidth - 12 - 9), HoldTemp, HeaterTemp + 10);
+                percent = (LizardData.CurrentEnvironmentTemp - HoldTemp) / (HeaterTemp + 10 - HoldTemp);
+                Console.WriteLine(string.Format("Heater  :  [{{0,-{0}}}] {1:F2}C", bar_size, LizardData.CurrentEnvironmentTemp), string.Concat(Enumerable.Repeat("-", (int)(percent * bar_size))));
+                //
                 Console.WriteLine();
                 Console.WriteLine("Press any key to return...");
                 System.Threading.Thread.Sleep(500);
@@ -176,7 +184,7 @@ namespace LizardsConsole
 
         private void _HoldTemp()
         {
-            ArduinoCommunicator.StartHoldingTemp(HoldTemp);
+            ArduinoCommunicator.StartHoldingTemp(HoldTemp, HeaterTemp);
         }
 
         private void _StartRamp()
