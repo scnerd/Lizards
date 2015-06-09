@@ -45,11 +45,12 @@
 
 //Temp Sensor addresses
 #define AMB_TEMP 0
-#define LIZ_TEMP_0 1
-#define LIZ_TEMP_1 2
-#define LIZ_TEMP_2 3
-#define LIZ_TEMP_3 4
-#define LIZ_TEMP_4 5
+#define HEATER_TEMP 1
+#define LIZ_TEMP_0 2
+#define LIZ_TEMP_1 3
+#define LIZ_TEMP_2 4
+#define LIZ_TEMP_3 5
+#define LIZ_TEMP_4 6
 
 //other constants
 #define ON 1
@@ -296,10 +297,11 @@ void send_temp(int temp) {
  *Returns: void
  *
  */
-void send_packet(int amb_temp, int *liz_temps) {
+void send_packet(int amb_temp, int heater_actual_temp, int *liz_temps) {
 	int i;
 	send_deadbeef();
 	
+	send_temp(heater_actual_temp);
 	send_temp(amb_temp);
 	for(i = 0; i < NUM_LIZARDS; i++) {
 		send_temp(liz_temps[i]);
@@ -405,7 +407,7 @@ int main(void)
 	DDRC = SCL | SDA;								//Set the SCL and SDA pins to outputs
 	uint16_t sig = 0;
 	int liz_temps[NUM_LIZARDS] = {1, 1, 1, 1, 1};
-	int amb_temp = 0, ideal_temp = 0;
+	int environ_temp = 0, ideal_temp = 0, heater_temp = 0;
 	int ramp = 0, start_temp = 0;
 	int end_temp = 0;
 
@@ -422,17 +424,19 @@ int main(void)
 		sig = read_sig(2);
 		if(sig == HOLD) {
 			start_temp = read_sig(2);			//get start temp from USART
+			heater_temp = read_sig(2);			//get the heating chamber temp from USART
 			idealTemp = start_temp;				//set ideal temp to the start temp
-			heat_until(start_temp);				//heat the environment until it reaches the start temp
+			heat_until(heater_temp);			//heat the environment until it reaches the start temp
 		}
 		else if(sig == START) {
 			ramp = read_sig(2);					// read in the ramping multiplier, NOTE: currently not being implemented
 			end_temp = read_sig(2);				// read in a target end temperature
 			while(!is_data_on_usart() && ideal_temp < end_temp) {		//continue until the ideal temperature reaches the end temperature
-				amb_temp = read_temp(AMB_TEMP);
-				ideal_temp = pid_loop(amb_temp, start_temp);			//correct heating to reach a 1 degree C per minute ramp
+				environ_temp = read_temp(AMB_TEMP);
+				int heater_actual_temp = read_temp(HEATER_TEMP);
+				ideal_temp = pid_loop(environ_temp, start_temp);			//correct heating to reach a 1 degree C per minute ramp
 				read_liz_temps(liz_temps);
-				send_packet(amb_temp, liz_temps);				//send packet through USART containing all the data fromt the temp sensors
+				send_packet(environ_temp, heater_actual_temp, liz_temps);				//send packet through USART containing all the data fromt the temp sensors
 				_delay_ms(100);									//delay for timing purposes
 			}
 		}

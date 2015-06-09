@@ -21,20 +21,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+        "MsmKey" = "8:_75F939967C184528A43B678979426A91"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7AD6533D7F3DAECC5A5F98FCF84D9916"
         "OwnerKey" = "8:_75F939967C184528A43B678979426A91"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+        "MsmKey" = "8:_7AD6533D7F3DAECC5A5F98FCF84D9916"
         "OwnerKey" = "8:_DE2CAF72538C41C9B6F17CD007F50F2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_75F939967C184528A43B678979426A91"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -52,6 +52,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7AD6533D7F3DAECC5A5F98FCF84D9916"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DE2CAF72538C41C9B6F17CD007F50F2C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -59,12 +65,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_75F939967C184528A43B678979426A91"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -209,14 +209,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7AD6533D7F3DAECC5A5F98FCF84D9916"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Lizards, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6B8D748B9D7772D2BDFF52C71D5AFFA8"
+                    "_7AD6533D7F3DAECC5A5F98FCF84D9916"
                     {
                     "Name" = "8:Lizards.dll"
                     "Attributes" = "3:512"
@@ -297,7 +297,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Lizards"
         "ProductCode" = "8:{13287006-3655-4BD7-9701-2E7C321FAC46}"
-        "PackageCode" = "8:{82CADA3D-450A-40D5-A894-DFAF06C47884}"
+        "PackageCode" = "8:{A2B21C10-7410-43FA-8222-592A00305797}"
         "UpgradeCode" = "8:{946E43D2-C2EF-48D0-88C3-B14B26EAEC08}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -846,7 +846,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_040FB25A26A04B92934C137F2AA3241B"
             {
-            "SourcePath" = "8:..\\Lizards\\obj\\WebInstall\\Lizards.dll"
+            "SourcePath" = "8:..\\Lizards\\obj\\Debug\\Lizards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
@@ -874,7 +874,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_75F939967C184528A43B678979426A91"
             {
-            "SourcePath" = "8:..\\LizardsGUI\\obj\\x86\\WebInstall\\LizardsGUI.exe"
+            "SourcePath" = "8:..\\LizardsGUI\\obj\\x86\\Debug\\LizardsGUI.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"
@@ -902,7 +902,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DE2CAF72538C41C9B6F17CD007F50F2C"
             {
-            "SourcePath" = "8:..\\LizardsConsole\\obj\\x86\\WebInstall\\LizardsConsole.exe"
+            "SourcePath" = "8:..\\LizardsConsole\\obj\\x86\\Debug\\LizardsConsole.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4DEC74B23E5749908BF5CDB5F45C78C7"

@@ -1,0 +1,156 @@
+% %
+% LAYOUT_E.TEX - Short description of REFMAN.CLS
+%                                       99-03-20
+%
+%  Updated for REFMAN.CLS (LaTeX2e)
+%
+\documentclass[twoside,a4paper]{refart}
+\usepackage{makeidx}
+\usepackage{ifthen}
+\usepackage{hyperref}
+% ifthen wird vom Bild von N.Beebe gebraucht!
+
+\def\bs{\char'134 } % backslash in \tt font.
+\newcommand{\ie}{i.\,e.,}
+\newcommand{\eg}{e.\,g..}
+\newcommand{\Lizards}[0]{LiThRTs }
+\newcommand{\degrees}{$^{\circ}$}
+\newcommand{\bhyperlink}[2]{\textbf{\href{#1}{#2}}}
+\DeclareRobustCommand\cs[1]{\texttt{\char`\\#1}}
+
+\title{\Lizards User Manual}
+\author{David Maxson}
+
+\date{}
+\emergencystretch1em  %
+
+\pagestyle{myfootings}
+%\markboth{Changing the layout with \textrm{\LaTeX}}%
+%         {Changing the layout with \textrm{\LaTeX}}
+
+\makeindex 
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+        This document briefly describes the usage of the \Lizards Arduino and Windows code projects. It is designed to be a simple start-to-finish guide for obtaining, using, and maintaining the system.
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+The \Lizards project is a microcontroller and Windows software pair built to run a custom Biology experiment for Dr. Emily Taylor. Our Arduino Uno code (or Atmega328p in general) is responsible to maintain a steady start temperature and a steadily increasing temperature in an enclosed heated gas system, while also reporting the environmental temperature and lizard body temperatures to the PC. The PC is responsible to enable user control of the microcontroller, and to receive and record the temperature readings from the microcontroller.
+
+\section{License}
+
+All code in this project is released under the MIT license for free redistribution and reuse.
+
+\section{Installation}
+
+All code can be obtained at the \Lizards \bhyperlink{https://github.com/scnerd/Lizards}{Github repository}.
+
+The \Lizards Arduino code can be compiled by Atmel Studio 6.2+ (or 6.x, though the project files may need to be rebuilt in versions before 6.2), and the resulting hex code can be deployed to an Arduino using AvrDude over the Arduino's USB serial connector.
+
+The \Lizards desktop application may be installed by unzipping the \\ \verb|WebInstall.zip| file (or \verb|Installer.zip| if you need to install on a machine with no internet access) and running \verb|setup.exe|. Note that previous versions may have to be uninstalled before the installer will work properly.
+
+The desktop code can also be compiled in Visual Studio 2010, 2012, or 2013. See \hyperref[codenotes]{Code Notes} below for prerequisites for compiling.
+
+\section{Basic Usage}
+
+\subsection{Instructions}
+
+Before doing anything with the desktop \Lizards application, ensure that an Arduino Uno has had the Arduino code uploaded to it, and that it is currently plugged in. The computer-side application will not allow you to launch it unless the Arduino is plugged in properly
+
+Launch the \Lizards application and initialize your experiment as desired.
+
+Once initialized, the computer will connect to the Arduino (which you specified in initialization). You may start receiving temperature readings, though you may not until you start the experiment. Note that the heating element should not be on at this time.
+
+Press the ``Hold Initial Temp'' button (or in console, Control Menu $\rightarrow$ Begin holding start temperature) to tell the Arduino to try to hold the lizard chambers' ambient temperature at what you specified (27 \degrees C by default)
+
+Press the ``Start Ramping Temp'' button (or in console, Control Menu $\rightarrow$ Begin ramping heater) to tell the Arduino to begin its temperature ramp. It will attempt to hold the lizard chambers' ambient temperature at your hold temperature (27 \degrees C) plus the number of minutes elapsed times your ramp temperature (1 \degrees C). For example, after three minutes, it will attempt to make the temperature 30 \degrees C. Note that it is incapable of cooling the ambient temperature, so if the starting temperature was higher than what you asked for, the heater will not turn on until after it is trying to get hotter than the actual ambient temperature. For example, if the environment was 30 \degrees C to start with, the heater won't turn on for the first 3 minutes while it is ramping the target temperature from 27 \degrees C to 30 \degrees C, after which it will start heating to reach the target temperature.
+
+Press the ``End Experiment'' button (or in console, Control Menu $\rightarrow$ Stop ramping heater) to tell the Arduino to turn off the heater. This will also save your data for you, and should display the filepath of the saved file.
+
+You may also save your data at any time using the ``Save Results'' button or CTRL + S (or in console, Main Menu $\rightarrow$ Save data). The data will be in the same format regardless of when it gets saved, though it will obviously be incomplete if the experiment is still running.
+
+Closing the application will also send the stop signal to the Arduino, and will save the data if you haven't already saved it or if there's new data that you didn't save yet. To prevent unexpected failures or loss of data, it is recommended that  you explicitly tell the Arduino to stop and manually save the data before exiting.
+
+\subsection{Output Format}
+
+Result data is saved in \verb|My Documents\Lizards|, and each filename is timestamped so that they are sortable by time. The CSV data can be opened in any spreadsheet application (Google Sheets, Microsoft Excel, Libre/Open Office, etc.).
+
+The CSV file consists of three tables. The first is a simple two-entry row that indicates when the experiment was started. Note that pressing ``Start Experiment'' multiple times will reset this start time.
+
+The second table gives timestamps for each event for each lizard (cells are left blank if the event wasn't ever marked), followed by ambient and lizard temperature readings for every time interval as specified during initialization. By default, this means you will get all temperatures for every 15 seconds elapsed since the start of the experiment. Timestamps are given relative to the start time, and thus might get converted (especially by Sheets or Excel) into a date and time (12AM, some date way in the past). Make sure when importing this file that these fields get left alone, as they should be read as ``hours:minutes:seconds'' since start time.
+
+The final table shows all data tagged for each event and note. Any custom notes will appear here, as well as all standard events. This table is sorted by timestamp by default. Each record is tagged with which lizard is being referred to, the timestamp that the note or event was made, the ambient and lizard's temperature at that moment, and any text associated with the record.
+
+\subsection{Issues}
+
+If the pretty interface isn't working properly, the console version should suffice, and offers all the same capabilities.
+
+All code is available at \bhyperlink{https://github.com/scnerd/Lizards}{Github} and can be downloaded, fixed, and compiled by itself. The code itself is thoroughly commented, so edits should be simple to perform.
+
+\section{Code Notes}
+\label{codenotes}
+
+\subsection{Prerequisites}
+
+In order to open the Lizards Arduino code, the coder must have Atmel Studio 6.2+. Earlier versions (6.X) will also work, though the solution and project files may have to be recreated and the source files re-imported. The resulting \verb|Lizard.hex| output can be uploaded to the Arduino using AvrDude.
+
+In order to open the Lizards computer code, the coder must have Visual Studio 2010, 2012, or 2013 (with C\#, so some VS Express versions will not work), as well as .NET 4.0 Client Profile available. To load the Installer project successfully, you must have downloaded and installed the Microsoft Visual Studio 2013 Installer Projects, which stopped being included by default in VS 2012. It should have been available in 2010, and can be \bhyperlink{https://visualstudiogallery.msdn.microsoft.com/9abe329c-9bba-44a1-be59-0fbf6151054d}{installed in 2013}.
+
+\subsection{Structure}
+
+The program is split into the Arduino code, a Windows library, and two Windows applications. The Arduino code is openable in Atmel Studio 6.2+, and can be deployed using AvrDude. The library (Lizards.dll) handles all communication and state maintenance, and is usable by other .NET applications. The two applications merely provide interfaces to this. Issues in communication should thus be limited to the Lizards library.
+
+The code is largely commented, besides some of the helper classes that just perform small, modular tasks. See the comments and code headers for help if you need to recode anything.
+
+\subsection{Communication}
+
+The communication between the Arduino and the PC takes place entirely as 16-bit integers.
+
+The following commands can be sent from the PC to the Arduino:
+\begin{verbatim}
+HOLD:  0x0001 0xTARG 0xHEAT
+START: 0x0002 0xRAMP 0xUPTO
+STOP:  0x0003
+\end{verbatim}
+where
+\begin{itemize}
+\item \verb|TARG|: The temperature to hold the environment at while in the "holding" state.
+\item \verb|HEAT|: The temperature to maintain in the heating chamber until stopped.
+\item \verb|RAMP|: The temperature change per minute to maintain while in the "ramping" state.
+\item \verb|UPTO|: The temperature at which to stop ramping, the max the environment should ever reach.
+\end{itemize}
+All temperatures sent to the Arduino are reverse-scaled using a single "ambient" thermometer setting. Thus, if the ambient thermometer reports 16 integer values per degree Celsius, then a ramp temperature of 1 degree per minute would be transmitted as 16, and a target of 50 C would be reported as 50*16=320. This also means that it is assumed that the heating chamber and the environment use the same thermometer type. Arduino-side scaling will be needed if this is not true.
+   
+The Arduino responds to the PC using the following packet form
+\begin{verbatim}
+0xDEAD 0xBEEF 0xHEAT 0xENVI 0xLIZ1
+0xLIZ2 ...    0xLIZN 0xDEAD 0xBEEF
+\end{verbatim}
+where
+\begin{itemize}
+\item \verb|DEAD|: \verb|0xDEAD|, exactly like it sounds like.
+\item \verb|BEEF|: \verb|0xBEEF|, exactly like it sounds like. These two values are used as unique packet border values to ensure that data doesn't get written to the wrong variables.
+\item \verb|HEAT|: The temperature in the heating chamber.
+\item \verb|ENVI|: The temperature in the lizard environment.
+\item \verb|LIZN|: The temperature of lizard number $N$ - note that these are the only temperatures scaled using the lizard thermometer settings.
+\end{itemize}
+
+\section{Conclusion}
+
+This documentation and the help and descriptive texts built into the applications and code should be sufficient to guide any new user through the use of the \Lizards program suite. All control signals are ordered and numbered to encourage proper use. Once installed and properly set up, this interface should be intuitive, easy, and lightweight to use for record keeping while overheating lizards.
+
+\end{document}

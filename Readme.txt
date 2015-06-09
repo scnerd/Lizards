@@ -68,7 +68,7 @@ Where
    RAMP: The temperature change per minute to maintain while in the "ramping" state
    UPTO: The temperature at which to stop ramping, the max the environment should ever reach
    
-   NOTE: ALL TEMPERATURES SENT TO THE ARDUINO ARE SCALED USING THE "AMBIENT" THERMOMETER SETTINGS. Thus, if the ambient thermometer reports 16 integer values per degree Celsius, then a ramp temperature of 1 degree per minute would be transmitted as 16, and a target of 50 C would be reported as 50*16=320.
+   NOTE: ALL TEMPERATURES SENT TO THE ARDUINO ARE REVERSE-SCALED USING THE "AMBIENT" THERMOMETER SETTINGS. Thus, if the ambient thermometer reports 16 integer values per degree Celsius, then a ramp temperature of 1 degree per minute would be transmitted as 16, and a target of 50 C would be reported as 50*16=320.
    NOTE: It is assumed that the heating chamber and the environment use the same thermometer type. Arduino-side scaling will be needed if this is not true.
    
 The Arduino responds to the PC using the following packet form

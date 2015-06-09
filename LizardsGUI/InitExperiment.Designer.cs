@@ -40,18 +40,18 @@
             this.btnReport = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblHeater = new System.Windows.Forms.Label();
             this.btnMaxTemp = new System.Windows.Forms.Button();
             this.btnRampTemp = new System.Windows.Forms.Button();
             this.btnHoldTemp = new System.Windows.Forms.Button();
             this.numMaxTemp = new System.Windows.Forms.NumericUpDown();
             this.numRampTemp = new System.Windows.Forms.NumericUpDown();
             this.numHoldTemp = new System.Windows.Forms.NumericUpDown();
+            this.lblMaxTemp = new System.Windows.Forms.Label();
             this.lblRampTemp = new System.Windows.Forms.Label();
             this.lblHoldTemp = new System.Windows.Forms.Label();
-            this.lblMaxTemp = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.numHeater = new System.Windows.Forms.NumericUpDown();
-            this.lblHeater = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numNumLizards)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numReport)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -266,6 +266,18 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(378, 242);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
+            // lblHeater
+            // 
+            this.lblHeater.AutoSize = true;
+            this.lblHeater.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblHeater.Location = new System.Drawing.Point(3, 212);
+            this.lblHeater.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblHeater.Name = "lblHeater";
+            this.lblHeater.Size = new System.Drawing.Size(119, 13);
+            this.lblHeater.TabIndex = 24;
+            this.lblHeater.Text = "Heating Chamber (C):";
+            this.lblHeater.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // btnMaxTemp
             // 
             this.btnMaxTemp.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -372,6 +384,18 @@
             0,
             0});
             // 
+            // lblMaxTemp
+            // 
+            this.lblMaxTemp.AutoSize = true;
+            this.lblMaxTemp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblMaxTemp.Location = new System.Drawing.Point(3, 177);
+            this.lblMaxTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
+            this.lblMaxTemp.Name = "lblMaxTemp";
+            this.lblMaxTemp.Size = new System.Drawing.Size(119, 13);
+            this.lblMaxTemp.TabIndex = 11;
+            this.lblMaxTemp.Text = "Max Temp (C):";
+            this.lblMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // lblRampTemp
             // 
             this.lblRampTemp.AutoSize = true;
@@ -395,18 +419,6 @@
             this.lblHoldTemp.TabIndex = 10;
             this.lblHoldTemp.Text = "Hold / Start Temp (C):";
             this.lblHoldTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblMaxTemp
-            // 
-            this.lblMaxTemp.AutoSize = true;
-            this.lblMaxTemp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblMaxTemp.Location = new System.Drawing.Point(3, 177);
-            this.lblMaxTemp.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
-            this.lblMaxTemp.Name = "lblMaxTemp";
-            this.lblMaxTemp.Size = new System.Drawing.Size(119, 13);
-            this.lblMaxTemp.TabIndex = 11;
-            this.lblMaxTemp.Text = "Max Temp (C):";
-            this.lblMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // button1
             // 
@@ -439,18 +451,6 @@
             0,
             0,
             0});
-            // 
-            // lblHeater
-            // 
-            this.lblHeater.AutoSize = true;
-            this.lblHeater.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblHeater.Location = new System.Drawing.Point(3, 212);
-            this.lblHeater.Margin = new System.Windows.Forms.Padding(3, 7, 3, 3);
-            this.lblHeater.Name = "lblHeater";
-            this.lblHeater.Size = new System.Drawing.Size(119, 13);
-            this.lblHeater.TabIndex = 24;
-            this.lblHeater.Text = "Heating Chamber (C):";
-            this.lblHeater.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // InitExperiment
             // 
